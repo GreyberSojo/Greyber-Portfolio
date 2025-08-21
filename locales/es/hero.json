@@ -1,0 +1,11 @@
+{
+  "greeting": "Hola, soy",
+  "name": "Greyber",
+  "tagline": "QA Engineer · Automation · Game Dev",
+  "ctaProjects": "Explora mi trabajo",
+  "ctaDownload": "Descargar CV",
+  "ariaProjects": "Ir a proyectos",
+  "ariaDownload": "Descargar CV",
+  "avatarAlt": "Foto de Greyber Sojo",
+  "badges": ["+3 años en QA", "Automation & Manual", "2 prototipos de juegos"]
+}

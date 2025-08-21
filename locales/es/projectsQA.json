@@ -1,0 +1,11 @@
+{
+  "heading": "🧪 Habilidades QA",
+  "filters": ["Todos", "Automatización", "Manual", "API"],
+  "speed": "Velocidad",
+  "speedAria": "Velocidad {value}x",
+  "openDemo": "Abrir demo",
+  "status": {
+    "passed": "Aprobado",
+    "failed": "Falló"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "Let's talk?",
+  "contact": "Contact",
+  "intro": "If you have a project, a technical question or want to collaborate, write me. I reply as soon as possible.",
+  "formDesc": "Contact form: name, email, subject and message.",
+  "placeholders": {
+    "name": "Your name",
+    "email": "you@email.com",
+    "subject": "About...",
+    "message": "Tell me about your project, question or proposal…"
+  },
+  "aria": {
+    "copyEmail": "Copy email",
+    "openEmail": "Send email",
+    "contactLinks": "Contact links"
+  },
+  "buttons": {
+    "copyEmail": "Copy email",
+    "copied": "Copied",
+    "send": "Send",
+    "sendMessage": "Send message",
+    "sending": "Sending...",
+    "openClient": "Open client",
+    "copy": "Copy",
+    "open": "Open"
+  },
+  "validation": {
+    "nameRequired": "Name is required.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter a valid email.",
+    "messageMin": "Message must be at least 10 characters.",
+    "websiteSpam": "Spam detected."
+  },
+  "status": {
+    "errorFix": "Fix errors before sending.",
+    "success": "Message sent. Thanks! I'll reply soon.",
+    "serverError": "It wasn't possible to send from the server. Opening your mail client…",
+    "noBackend": "No backend available. Your mail client will open."
+  },
+  "aside": {
+    "directContact": "Direct contact",
+    "alsoContact": "You can also reach me through these channels:",
+    "responseTime": "Reply within ~4h",
+    "usefulDetails": "Useful details",
+    "timezone": "Time zone: Argentina (GMT-3)",
+    "availability": "Availability: Freelance / remote / hybrid",
+    "languages": "Languages: Spanish (native), English (advanced)",
+    "ctaHeading": "Looking for QA, Automation or Dev?",
+    "ctaText": "I can help test your app/web (CI, E2E, API) or develop. Write me!"
+  },
+  "honeypotInfo": "Protected by honeypot • No spam",
+  "honeypotLabel": "If you see this field, don't send."
+}

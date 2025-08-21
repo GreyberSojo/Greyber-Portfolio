@@ -6,10 +6,12 @@ import Image from "next/image";
 import Lottie from "lottie-react";
 import { Button } from "@/components/ui/button";
 import { FaArrowRight, FaDownload, FaCheckCircle } from "react-icons/fa";
+import { useTranslations } from "@/lib/i18n";
 import { fadeUp } from "@/lib/animations";
 import animationData from "../../public/lotties/qa-automation.json";
 
 export default function Hero() {
+  const t = useTranslations("hero");
   // Respeta reduced motion
   const [reduceMotion, setReduceMotion] = useState(false);
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function Hero() {
               <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full ring-4 ring-[var(--primary)] overflow-hidden shadow-xl">
                 <Image
                   src="/images/avatar.png"
-                  alt="Foto de Greyber Sojo"
+                  alt={t("avatarAlt")}
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
@@ -85,11 +87,11 @@ export default function Hero() {
             </motion.div>
 
             <motion.h1 {...mv} className="text-3xl md:text-5xl font-extrabold tracking-tight">
-              Hola, soy <span className="text-primary">Greyber</span>
+              {t("greeting")} <span className="text-primary">{t("name")}</span>
             </motion.h1>
 
             <motion.p {...mv} className="mt-3 text-lg sm:text-xl md:text-2xl text-foreground/70 max-w-xl">
-              QA Engineer · Automation · Game Dev
+              {t("tagline")}
             </motion.p>
 
             {/* CTAs */}
@@ -99,8 +101,8 @@ export default function Hero() {
                 variant="default"
                 className="shadow-[0_10px_25px_0_color-mix(in_oklab,var(--primary)_20%,transparent)]"
               >
-                <a href="#projects" aria-label="Ir a proyectos" className="inline-flex items-center gap-2">
-                  Explora mi trabajo <FaArrowRight />
+                <a href="#projects" aria-label={t("ariaProjects")} className="inline-flex items-center gap-2">
+                  {t("ctaProjects")} <FaArrowRight />
                 </a>
               </Button>
 
@@ -110,17 +112,17 @@ export default function Hero() {
                   download
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Descargar CV"
+                  aria-label={t("ariaDownload")}
                   className="inline-flex items-center gap-2"
                 >
-                  <FaDownload /> Descargar CV
+                  <FaDownload /> {t("ctaDownload")}
                 </a>
               </Button>
             </motion.div>
 
             {/* Badges */}
             <motion.ul {...mv} className="mt-6 flex flex-wrap gap-3 text-sm">
-              {["+3 años en QA", "Automation & Manual", "2 prototipos de juegos"].map((item) => (
+              {(t("badges") as string[]).map((item) => (
                 <li
                   key={item}
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border"

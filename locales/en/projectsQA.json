@@ -1,0 +1,11 @@
+{
+  "heading": "🧪 QA Skills",
+  "filters": ["All", "Automation", "Manual", "API"],
+  "speed": "Speed",
+  "speedAria": "Speed {value}x",
+  "openDemo": "Open demo",
+  "status": {
+    "passed": "Passed",
+    "failed": "Failed"
+  }
+}
