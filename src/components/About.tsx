@@ -16,7 +16,7 @@ import {
   FaGraduationCap,
 } from "react-icons/fa";
 import { fadeUp } from "@/lib/animations";
-import { useTranslations } from "@/lib/i18n";
+import { useTranslations } from "next-intl";
 
 /* --------- Reduced motion --------- */
 function usePrefersReducedMotion() {

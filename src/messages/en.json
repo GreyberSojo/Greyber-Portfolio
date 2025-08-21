@@ -1,5 +1,188 @@
 {
   "Index": {
     "title": "Welcome"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Greyber",
+    "tagline": "QA Engineer · Automation · Game Dev",
+    "ctaProjects": "Explore my work",
+    "ctaDownload": "Download CV",
+    "ariaProjects": "Go to projects",
+    "ariaDownload": "Download CV",
+    "avatarAlt": "Photo of Greyber Sojo",
+    "badges": ["3+ years in QA", "Automation & Manual", "2 game prototypes"]
+  },
+  "about": {
+    "heading": "About me",
+    "aria": "About me",
+    "experience": [
+      {
+        "year": "2023 – Present",
+        "title": "QA Engineer",
+        "company": "XYZ Company",
+        "desc": "Automation with Playwright, Cypress and TOSCA. Manual/exploratory testing, bug reporting and CI support."
+      },
+      {
+        "year": "2021 – 2023",
+        "title": "Game Developer (Freelance)",
+        "company": "Indie Projects",
+        "desc": "Prototypes with Godot/Unity, gameplay loops, simple build pipelines and game testing."
+      },
+      {
+        "year": "2019 – 2021",
+        "title": "Software Engineering",
+        "company": "Education",
+        "desc": "Solid foundations of software quality, patterns, testing and SDLC."
+      }
+    ],
+    "intro": "I am a <strong>QA Engineer</strong> and <strong>Game Developer</strong>. I focus on automation, robust testing and clean, stable game experiences.",
+    "skillsHeading": "Skills & tools",
+    "skills": [
+      "TOSCA",
+      "Playwright",
+      "Cypress",
+      "Godot",
+      "Unity",
+      "Automation",
+      "Manual Testing",
+      "Debugging"
+    ]
+  },
+  "contact": {
+    "title": "Let's talk?",
+    "contact": "Contact",
+    "intro": "If you have a project, a technical question or want to collaborate, write me. I reply as soon as possible.",
+    "formDesc": "Contact form: name, email, subject and message.",
+    "placeholders": {
+      "name": "Your name",
+      "email": "you@email.com",
+      "subject": "About...",
+      "message": "Tell me about your project, question or proposal…"
+    },
+    "aria": {
+      "copyEmail": "Copy email",
+      "openEmail": "Send email",
+      "contactLinks": "Contact links"
+    },
+    "buttons": {
+      "copyEmail": "Copy email",
+      "copied": "Copied",
+      "send": "Send",
+      "sendMessage": "Send message",
+      "sending": "Sending...",
+      "openClient": "Open client",
+      "copy": "Copy",
+      "open": "Open"
+    },
+    "validation": {
+      "nameRequired": "Name is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email.",
+      "messageMin": "Message must be at least 10 characters.",
+      "websiteSpam": "Spam detected."
+    },
+    "status": {
+      "errorFix": "Fix errors before sending.",
+      "success": "Message sent. Thanks! I'll reply soon.",
+      "serverError": "It wasn't possible to send from the server. Opening your mail client…",
+      "noBackend": "No backend available. Your mail client will open."
+    },
+    "aside": {
+      "directContact": "Direct contact",
+      "alsoContact": "You can also reach me through these channels:",
+      "responseTime": "Reply within ~4h",
+      "usefulDetails": "Useful details",
+      "timezone": "Time zone: Argentina (GMT-3)",
+      "availability": "Availability: Freelance / remote / hybrid",
+      "languages": "Languages: Spanish (native), English (advanced)",
+      "ctaHeading": "Looking for QA, Automation or Dev?",
+      "ctaText": "I can help test your app/web (CI, E2E, API) or develop. Write me!"
+    },
+    "honeypotInfo": "Protected by honeypot • No spam",
+    "honeypotLabel": "If you see this field, don't send."
+  },
+  "projectsQA": {
+    "heading": "🧪 QA Skills",
+    "filters": ["All", "Automation", "Manual", "API"],
+    "speed": "Speed",
+    "speedAria": "Speed {value}x",
+    "openDemo": "Open demo",
+    "status": {
+      "passed": "Passed",
+      "failed": "Failed"
+    }
+  },
+  "projectsGames": {
+    "heading": "Projects (Games • Web • QA)",
+    "toggle": "Switch to {mode}",
+    "modeNames": {
+      "simple": "Simple",
+      "advanced": "Advanced"
+    },
+    "searchPlaceholder": "Search by title or technology",
+    "searchAria": "Search projects",
+    "types": {
+      "all": "All",
+      "game": "Games",
+      "web": "Web",
+      "tool": "Tools",
+      "qa": "QA"
+    },
+    "sorts": {
+      "recent": "Most recent",
+      "oldest": "Oldest",
+      "az": "A–Z",
+      "stars": "Popularity (⭐)"
+    },
+    "sortAria": "Sort projects",
+    "github": "See all on GitHub"
+  },
+  "project": {
+    "dungeon-crawler": {
+      "title": "Dungeon Crawler",
+      "summary": "2D prototype with loot, procedural rooms and basic real-time combat.",
+      "tags": {
+        "procedural": "Procedural",
+        "2d": "2D",
+        "pixel": "Pixel"
+      }
+    },
+    "pixel-shooter": {
+      "title": "Pixel Shooter",
+      "summary": "Arcade shooter with waves, power-ups and simple particle system.",
+      "tags": {
+        "shooter": "Shooter",
+        "arcade": "Arcade",
+        "fx": "FX"
+      }
+    },
+    "truco-argentino": {
+      "title": "Truco Argentino (Godot)",
+      "summary": "Implementation of Truco rules: envido, flor (optional), truco/retruco/vale cuatro. Simple UI and logic prepared for AI and online.",
+      "tags": {
+        "cartas": "Cards",
+        "ia-roadmap": "AI (roadmap)",
+        "online-roadmap": "Online (roadmap)"
+      }
+    },
+    "portfolio-website": {
+      "title": "This site (Portfolio)",
+      "summary": "Portfolio built with Next.js, Tailwind, Framer Motion and shadcn/ui. Dark/Light mode, animated sections, SEO and reusable components.",
+      "tags": {
+        "seo": "SEO",
+        "accesibilidad": "Accessibility",
+        "animaciones": "Animations"
+      }
+    },
+    "qa-automation-playwright": {
+      "title": "QA Automation (Playwright)",
+      "summary": "UI and API test suite with Playwright, fixtures, screenshots and HTML reports.",
+      "tags": {
+        "testing": "Testing",
+        "api": "API",
+        "ui": "UI"
+      }
+    }
   }
 }

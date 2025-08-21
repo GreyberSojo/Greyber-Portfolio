@@ -10,7 +10,7 @@ import {
   FaItchIo,
   FaClipboard,
 } from "react-icons/fa";
-import { useTranslations } from "@/lib/i18n";
+import { useTranslations } from "next-intl";
 
 /* ==== Config ==== */
 const CONTACT_EMAIL = "greybersojo@gmail.com";

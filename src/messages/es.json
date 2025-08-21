@@ -1,5 +1,188 @@
 {
   "Index": {
     "title": "Bienvenido"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "name": "Greyber",
+    "tagline": "QA Engineer · Automation · Game Dev",
+    "ctaProjects": "Explora mi trabajo",
+    "ctaDownload": "Descargar CV",
+    "ariaProjects": "Ir a proyectos",
+    "ariaDownload": "Descargar CV",
+    "avatarAlt": "Foto de Greyber Sojo",
+    "badges": ["+3 años en QA", "Automation & Manual", "2 prototipos de juegos"]
+  },
+  "about": {
+    "heading": "Sobre mí",
+    "aria": "Sobre mí",
+    "experience": [
+      {
+        "year": "2023 – Actualidad",
+        "title": "QA Engineer",
+        "company": "Empresa XYZ",
+        "desc": "Automatización con Playwright, Cypress y TOSCA. Pruebas manuales/exploratorias, reporte de bugs y soporte en CI."
+      },
+      {
+        "year": "2021 – 2023",
+        "title": "Game Developer (Freelance)",
+        "company": "Proyectos Indie",
+        "desc": "Prototipos con Godot/Unity, gameplay loops, pipelines simples de build y testing en juegos."
+      },
+      {
+        "year": "2019 – 2021",
+        "title": "Ingeniería de Software",
+        "company": "Formación",
+        "desc": "Bases sólidas de calidad de software, patrones, testing y SDLC."
+      }
+    ],
+    "intro": "Soy <strong>QA Engineer</strong> y <strong>Game Developer</strong>. Me enfoco en automatización, pruebas robustas y experiencias de juego limpias y estables.",
+    "skillsHeading": "Skills y herramientas",
+    "skills": [
+      "TOSCA",
+      "Playwright",
+      "Cypress",
+      "Godot",
+      "Unity",
+      "Automatización",
+      "Testing Manual",
+      "Debugging"
+    ]
+  },
+  "contact": {
+    "title": "¿Hablamos?",
+    "contact": "Contacto",
+    "intro": "Si tenés un proyecto, una duda técnica o querés colaborar, escribime. Respondo lo antes posible.",
+    "formDesc": "Formulario de contacto: nombre, email, asunto y mensaje.",
+    "placeholders": {
+      "name": "Tu nombre",
+      "email": "tu@correo.com",
+      "subject": "Sobre...",
+      "message": "Contame sobre tu proyecto, la duda o la propuesta…"
+    },
+    "aria": {
+      "copyEmail": "Copiar email",
+      "openEmail": "Enviar email",
+      "contactLinks": "Enlaces de contacto"
+    },
+    "buttons": {
+      "copyEmail": "Copiar email",
+      "copied": "Copiado",
+      "send": "Enviar",
+      "sendMessage": "Enviar mensaje",
+      "sending": "Enviando...",
+      "openClient": "Abrir cliente",
+      "copy": "Copiar",
+      "open": "Abrir"
+    },
+    "validation": {
+      "nameRequired": "El nombre es requerido.",
+      "emailRequired": "El correo es requerido.",
+      "emailInvalid": "Introduce un correo válido.",
+      "messageMin": "El mensaje debe tener al menos 10 caracteres.",
+      "websiteSpam": "Spam detectado."
+    },
+    "status": {
+      "errorFix": "Corrige los errores antes de enviar.",
+      "success": "Mensaje enviado. ¡Gracias! Te respondo pronto.",
+      "serverError": "No fue posible enviar desde el servidor. Abriendo tu cliente de correo…",
+      "noBackend": "No hay backend disponible. Se abrirá tu cliente de correo."
+    },
+    "aside": {
+      "directContact": "Contacto directo",
+      "alsoContact": "También podés contactarme directamente por estos canales:",
+      "responseTime": "Respuesta en ~4h",
+      "usefulDetails": "Detalles útiles",
+      "timezone": "Zona horaria: Argentina (GMT-3)",
+      "availability": "Disponibilidad: Freelance / remoto / híbrido",
+      "languages": "Idiomas: Español (nativo), Inglés (avanzado)",
+      "ctaHeading": "¿Buscás QA, Automation o Dev?",
+      "ctaText": "Puedo ayudarte con el testing de tu app/web (CI, E2E, API) o desarrollando. ¡Escribime!"
+    },
+    "honeypotInfo": "Protegido por honeypot • Sin spam",
+    "honeypotLabel": "Si ves este campo, no envíes."
+  },
+  "projectsQA": {
+    "heading": "🧪 Habilidades QA",
+    "filters": ["Todos", "Automatización", "Manual", "API"],
+    "speed": "Velocidad",
+    "speedAria": "Velocidad {value}x",
+    "openDemo": "Abrir demo",
+    "status": {
+      "passed": "Aprobado",
+      "failed": "Falló"
+    }
+  },
+  "projectsGames": {
+    "heading": "Proyectos (Games • Web • QA)",
+    "toggle": "Cambiar a {mode}",
+    "modeNames": {
+      "simple": "Simple",
+      "advanced": "Avanzado"
+    },
+    "searchPlaceholder": "Buscar por título o tecnología",
+    "searchAria": "Buscar proyectos",
+    "types": {
+      "all": "Todos",
+      "game": "Juegos",
+      "web": "Web",
+      "tool": "Herramientas",
+      "qa": "QA"
+    },
+    "sorts": {
+      "recent": "Más recientes",
+      "oldest": "Más antiguos",
+      "az": "A–Z",
+      "stars": "Popularidad (⭐)"
+    },
+    "sortAria": "Ordenar proyectos",
+    "github": "Ver todo en GitHub"
+  },
+  "project": {
+    "dungeon-crawler": {
+      "title": "Dungeon Crawler",
+      "summary": "Prototipo 2D con loot, salas procedurales y combate básico en tiempo real.",
+      "tags": {
+        "procedural": "Procedural",
+        "2d": "2D",
+        "pixel": "Pixel"
+      }
+    },
+    "pixel-shooter": {
+      "title": "Pixel Shooter",
+      "summary": "Shooter arcade con oleadas, power-ups y sistema simple de partículas.",
+      "tags": {
+        "shooter": "Shooter",
+        "arcade": "Arcade",
+        "fx": "FX"
+      }
+    },
+    "truco-argentino": {
+      "title": "Truco Argentino (Godot)",
+      "summary": "Implementación de reglas de Truco: envido, flor (opcional), truco/retruco/vale cuatro. UI simple y lógica preparada para IA y online.",
+      "tags": {
+        "cartas": "Cartas",
+        "ia-roadmap": "IA (roadmap)",
+        "online-roadmap": "Online (roadmap)"
+      }
+    },
+    "portfolio-website": {
+      "title": "Este sitio (Portfolio)",
+      "summary": "Portafolio con Next.js, Tailwind, Framer Motion y shadcn/ui. Dark/Light mode, secciones animadas, SEO y componentes reusables.",
+      "tags": {
+        "seo": "SEO",
+        "accesibilidad": "Accesibilidad",
+        "animaciones": "Animaciones"
+      }
+    },
+    "qa-automation-playwright": {
+      "title": "QA Automation (Playwright)",
+      "summary": "Suite de pruebas UI y API con Playwright, fixtures, screenshots y reportes HTML.",
+      "tags": {
+        "testing": "Testing",
+        "api": "API",
+        "ui": "UI"
+      }
+    }
   }
 }

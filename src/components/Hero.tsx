@@ -6,7 +6,7 @@ import Image from "next/image";
 import Lottie from "lottie-react";
 import { Button } from "@/components/ui/button";
 import { FaArrowRight, FaDownload, FaCheckCircle } from "react-icons/fa";
-import { useTranslations } from "@/lib/i18n";
+import { useTranslations } from "next-intl";
 import { fadeUp } from "@/lib/animations";
 import animationData from "../../public/lotties/qa-automation.json";
 

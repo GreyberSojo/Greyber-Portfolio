@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, KeyboardEvent } from "react";
-import { t } from "@/locales";
+import { useTranslations } from "next-intl";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,7 @@ type Props = VariantProps<typeof cardVariants> & {
 
 export default function ProjectCard({ project, onOpen, density }: Props) {
   const [loaded, setLoaded] = useState(false);
+  const t = useTranslations();
 
   const handleKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -99,12 +100,12 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            {project.tech.slice(0, 3).map((t) => (
+            {project.tech.slice(0, 3).map((tech) => (
               <span
-                key={t}
+                key={tech}
                 className="pointer-events-auto text-[11px] px-2 py-0.5 rounded-full bg-background/80 border"
               >
-                {t}
+                {tech}
               </span>
             ))}
           </div>

@@ -8,8 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
 import { PROJECTS, type Project } from "@/data/projects";
-import { useTranslations } from "@/lib/i18n";
-import { t } from "@/locales";
+import { useTranslations } from "next-intl";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
@@ -149,6 +148,7 @@ function QuickViewModal({
   project: Project | null;
   onClose: () => void;
 }) {
+  const tp = useTranslations();
   const reduce = usePrefersReducedMotion();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -179,7 +179,7 @@ function QuickViewModal({
           <div className="relative aspect-[16/9] bg-background">
             <Image
               src={project.cover.src}
-              alt={t(project.title)}
+              alt={tp(project.title)}
               fill
               className="object-cover"
               placeholder="blur"
@@ -190,8 +190,8 @@ function QuickViewModal({
             </div>
           </div>
           <div className="p-4 md:p-6 flex flex-col gap-3">
-            <h3 className="text-xl md:text-2xl font-semibold">{t(project.title)}</h3>
-            <p className="text-sm text-foreground/70">{t(project.summary)}</p>
+            <h3 className="text-xl md:text-2xl font-semibold">{tp(project.title)}</h3>
+            <p className="text-sm text-foreground/70">{tp(project.summary)}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -304,6 +304,7 @@ function AdvancedGrid({
 // ---- Principal con botón toggle ----
 export default function ProjectsGames() {
   const t = useTranslations("projectsGames");
+  const tp = useTranslations();
   const reduce = usePrefersReducedMotion();
   const [mode, setMode] = useState<Mode>("simple");
   const [search, setSearch] = useState("");
@@ -313,13 +314,16 @@ export default function ProjectsGames() {
   const [active, setActive] = useState<Project | null>(null);
 
   const allTags = useMemo(
-    () => Array.from(new Set(PROJECTS.flatMap((p) => p.tags.map(t)))).sort(),
-    []
+    () =>
+      Array.from(new Set(PROJECTS.flatMap((p) => p.tags.map((tag) => tp(tag))))).sort(),
+    [tp]
   );
 
   const toggleTag = useCallback(
-    (t: string) =>
-      setSelectedTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])),
+    (tag: string) =>
+      setSelectedTags((prev) =>
+        prev.includes(tag) ? prev.filter((x) => x !== tag) : [...prev, tag]
+      ),
     []
   );
 
@@ -327,11 +331,11 @@ export default function ProjectsGames() {
     const term = search.trim().toLowerCase();
     let list = PROJECTS.filter((p) => {
       const matchType = selectedType === "all" || p.type === selectedType;
-      const translatedTags = p.tags.map(t);
+      const translatedTags = p.tags.map((tag) => tp(tag));
       const matchTags =
         selectedTags.length === 0 || selectedTags.every((tag) => translatedTags.includes(tag));
-      const title = t(p.title).toLowerCase();
-      const summary = t(p.summary).toLowerCase();
+      const title = tp(p.title).toLowerCase();
+      const summary = tp(p.summary).toLowerCase();
       const matchSearch =
         !term ||
         title.includes(term) ||
@@ -347,7 +351,7 @@ export default function ProjectsGames() {
         list = list.sort((a, b) => a.year - b.year);
         break;
       case "az":
-        list = list.sort((a, b) => t(a.title).localeCompare(t(b.title)));
+        list = list.sort((a, b) => tp(a.title).localeCompare(tp(b.title)));
         break;
       case "stars":
         list = list.sort((a, b) => (b.metrics?.stars ?? 0) - (a.metrics?.stars ?? 0));
