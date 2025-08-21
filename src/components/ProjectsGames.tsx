@@ -8,24 +8,25 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
 import { PROJECTS, type Project } from "@/data/projects";
+import { useTranslations } from "@/lib/i18n";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
 type Mode = "simple" | "advanced";
 
-const TYPES: { label: string; value: ProjectType | "all" }[] = [
-  { label: "Todos", value: "all" },
-  { label: "Juegos", value: "game" },
-  { label: "Web", value: "web" },
-  { label: "Herramientas", value: "tool" },
-  { label: "QA", value: "qa" },
+const TYPES: { value: ProjectType | "all" }[] = [
+  { value: "all" },
+  { value: "game" },
+  { value: "web" },
+  { value: "tool" },
+  { value: "qa" },
 ];
 
 const SORTS = [
-  { label: "Más recientes", value: "recent" },
-  { label: "Más antiguos", value: "oldest" },
-  { label: "A–Z", value: "az" },
-  { label: "Popularidad (⭐)", value: "stars" },
+  { value: "recent" },
+  { value: "oldest" },
+  { value: "az" },
+  { value: "stars" },
 ] as const;
 
 const BLUR_DATA_URL =
@@ -70,24 +71,25 @@ function FiltersBar({
   sort: typeof SORTS[number]["value"];
   setSort: (s: typeof SORTS[number]["value"]) => void;
 }) {
+  const t = useTranslations("projectsGames");
   return (
     <div className="max-w-6xl mx-auto mb-8 flex flex-col gap-4">
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por título o tecnología"
+          placeholder={t("searchPlaceholder")}
           className="flex-1 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          aria-label="Buscar proyectos"
+          aria-label={t("searchAria")}
         />
 
         <div className="flex flex-wrap gap-2">
-          {TYPES.map((t) => {
-            const active = selectedType === t.value;
+          {TYPES.map((tp) => {
+            const active = selectedType === tp.value;
             return (
               <button
-                key={t.value}
-                onClick={() => setSelectedType(t.value)}
+                key={tp.value}
+                onClick={() => setSelectedType(tp.value)}
                 className={`px-3 py-2 rounded-xl text-sm border transition ${
                   active
                     ? "bg-primary text-primary-foreground border-primary"
@@ -95,7 +97,7 @@ function FiltersBar({
                 }`}
                 aria-pressed={active}
               >
-                {t.label}
+                {t(`types.${tp.value}`)}
               </button>
             );
           })}
@@ -105,11 +107,11 @@ function FiltersBar({
           value={sort}
           onChange={(e) => setSort(e.target.value as any)}
           className="px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          aria-label="Ordenar proyectos"
+          aria-label={t("sortAria")}
         >
           {SORTS.map((s) => (
             <option key={s.value} value={s.value}>
-              {s.label}
+              {t(`sorts.${s.value}`)}
             </option>
           ))}
         </select>
@@ -300,6 +302,7 @@ function AdvancedGrid({
 
 // ---- Principal con botón toggle ----
 export default function ProjectsGames() {
+  const t = useTranslations("projectsGames");
   const reduce = usePrefersReducedMotion();
   const [mode, setMode] = useState<Mode>("simple");
   const [search, setSearch] = useState("");
@@ -357,7 +360,7 @@ export default function ProjectsGames() {
         transition={{ duration: 0.6 }}
         className="text-3xl md:text-4xl font-bold mb-3 text-center"
       >
-        Proyectos (Games • Web • QA)
+        {t("heading")}
       </motion.h2>
 
       <div className="text-center mb-8">
@@ -365,7 +368,7 @@ export default function ProjectsGames() {
           variant="outline"
           onClick={() => setMode(mode === "simple" ? "advanced" : "simple")}
         >
-          Cambiar a {mode === "simple" ? "Avanzado" : "Simple"}
+          {t("toggle", { mode: t(`modeNames.${mode === "simple" ? "advanced" : "simple"}`) })}
         </Button>
       </div>
 
@@ -390,7 +393,7 @@ export default function ProjectsGames() {
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         <a href="https://github.com/greyber" target="_blank" rel="noopener noreferrer">
-          <Button variant="outline">Ver todo en GitHub</Button>
+          <Button variant="outline">{t("github")}</Button>
         </a>
       </div>
 

@@ -10,6 +10,7 @@ import {
   FaItchIo,
   FaClipboard,
 } from "react-icons/fa";
+import { useTranslations } from "@/lib/i18n";
 
 /* ==== Config ==== */
 const CONTACT_EMAIL = "greybersojo@gmail.com";
@@ -32,6 +33,7 @@ function usePrefersReducedMotion() {
 type ContactLink = { name: string; link: string; icon: React.ReactNode };
 
 export default function Contact() {
+  const t = useTranslations("contact");
   const reduce = usePrefersReducedMotion();
 
   // social / quick links
@@ -91,12 +93,12 @@ export default function Contact() {
   const validateEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
   function validateForm() {
     const errs: Record<string, string> = {};
-    if (!name.trim()) errs.name = "El nombre es requerido.";
-    if (!email.trim()) errs.email = "El correo es requerido.";
-    else if (!validateEmail(email)) errs.email = "Introduce un correo válido.";
+    if (!name.trim()) errs.name = t("validation.nameRequired");
+    if (!email.trim()) errs.email = t("validation.emailRequired");
+    else if (!validateEmail(email)) errs.email = t("validation.emailInvalid");
     if (!message.trim() || message.trim().length < 10)
-      errs.message = "El mensaje debe tener al menos 10 caracteres.";
-    if (website.trim()) errs.website = "Spam detectado.";
+      errs.message = t("validation.messageMin");
+    if (website.trim()) errs.website = t("validation.websiteSpam");
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -114,7 +116,7 @@ export default function Contact() {
     setStatusMessage(null);
     if (!validateForm()) {
       setStatus("error");
-      setStatusMessage("Corrige los errores antes de enviar.");
+      setStatusMessage(t("status.errorFix"));
       return;
     }
 
@@ -135,7 +137,7 @@ export default function Contact() {
 
       if (res.ok) {
         setStatus("success");
-        setStatusMessage("Mensaje enviado. ¡Gracias! Te respondo pronto.");
+        setStatusMessage(t("status.success"));
         setName("");
         setEmail("");
         setSubject("");
@@ -146,7 +148,7 @@ export default function Contact() {
         const text = await res.text().catch(() => null);
         console.warn("API responded non-OK:", res.status, text);
         setStatus("error");
-        setStatusMessage("No fue posible enviar desde el servidor. Abriendo tu cliente de correo…");
+        setStatusMessage(t("status.serverError"));
         window.setTimeout(() => {
           window.location.href = buildMailto();
         }, 500);
@@ -154,7 +156,7 @@ export default function Contact() {
     } catch (err) {
       console.warn("Error enviando a /api/contact:", err);
       setStatus("error");
-      setStatusMessage("No hay backend disponible. Se abrirá tu cliente de correo.");
+      setStatusMessage(t("status.noBackend"));
       window.setTimeout(() => {
         window.location.href = buildMailto();
       }, 500);
@@ -261,11 +263,11 @@ export default function Contact() {
           viewport={{ once: true }}
           className="text-3xl md:text-4xl font-bold mb-6 text-center"
         >
-          ¿Hablamos? <span className="text-primary">Contacto</span>
+          {t("title")} <span className="text-primary">{t("contact")}</span>
         </motion.h2>
 
         <p className="text-center text-sm text-foreground/70 max-w-2xl mx-auto mb-8">
-          Si tenés un proyecto, una duda técnica o querés colaborar, escribime. Respondo lo antes posible.
+          {t("intro")}
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -281,7 +283,7 @@ export default function Contact() {
             style={{ borderColor: "var(--border)" }}
           >
             <div id="contact-form-desc" className="sr-only">
-              Formulario de contacto: nombre, email, asunto y mensaje.
+              {t("formDesc")}
             </div>
 
             {/* Status */}
@@ -313,10 +315,10 @@ export default function Contact() {
                   onClick={handleCopyEmail}
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-md border text-sm bg-transparent"
                   style={{ borderColor: "var(--border)" }}
-                  aria-label="Copiar email"
+                  aria-label={t("aria.copyEmail")}
                 >
                   <FaClipboard />
-                  {copied ? "Copiado" : "Copiar email"}
+                  {copied ? t("buttons.copied") : t("buttons.copyEmail")}
                 </button>
 
                 <button
@@ -341,7 +343,7 @@ export default function Contact() {
                   name="name"
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? "error-name" : undefined}
-                  placeholder="Tu nombre"
+                  placeholder={t("placeholders.name")}
                   className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
                   style={{
                     borderColor: errors.name
@@ -368,7 +370,7 @@ export default function Contact() {
                   name="email"
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "error-email" : undefined}
-                  placeholder="tu@correo.com"
+                  placeholder={t("placeholders.email")}
                   className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
                   style={{
                     borderColor: errors.email
@@ -392,7 +394,7 @@ export default function Contact() {
                 onChange={(e) => setSubject(e.target.value)}
                 type="text"
                 name="subject"
-                placeholder="Sobre..."
+                placeholder={t("placeholders.subject")}
                 className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
                 style={{ borderColor: "var(--border)" }}
               />
@@ -409,7 +411,7 @@ export default function Contact() {
                 overflow: "hidden",
               }}
             >
-              Si ves este campo, no envíes.
+              {t("honeypotLabel")}
               <input
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
@@ -428,7 +430,7 @@ export default function Contact() {
                 rows={6}
                 aria-invalid={!!errors.message}
                 aria-describedby={errors.message ? "error-message" : undefined}
-                placeholder="Contame sobre tu proyecto, la duda o la propuesta…"
+                placeholder={t("placeholders.message")}
                 className="px-3 py-2 rounded-md border bg-transparent resize-none focus:outline-none focus:ring-2"
                 style={{
                   borderColor: errors.message
@@ -468,7 +470,7 @@ export default function Contact() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                   </svg>
                 ) : null}
-                {sending ? "Enviando..." : "Enviar mensaje"}
+                {sending ? t("buttons.sending") : t("buttons.sendMessage")}
               </button>
 
               <button
@@ -477,11 +479,11 @@ export default function Contact() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md border bg-transparent text-sm"
                 style={{ borderColor: "var(--border)" }}
               >
-                Abrir cliente
+                {t("buttons.openClient")}
               </button>
 
               <div className="ml-auto text-xs text-foreground/60">
-                Protegido por honeypot • Sin spam
+                {t("honeypotInfo")}
               </div>
             </div>
           </motion.form>
@@ -493,15 +495,15 @@ export default function Contact() {
             transition={{ duration: 0.45, delay: 0.08 }}
             viewport={{ once: true }}
             className="space-y-4"
-            aria-label="Enlaces de contacto"
+            aria-label={t("aria.contactLinks")}
           >
             <div
               className="p-4 rounded-xl border shadow-sm bg-card/90 backdrop-blur"
               style={{ borderColor: "var(--border)" }}
             >
-              <h3 className="text-sm font-semibold mb-2">Contacto directo</h3>
+              <h3 className="text-sm font-semibold mb-2">{t("aside.directContact")}</h3>
               <p className="text-sm text-foreground/70 mb-3">
-                También podés contactarme directamente por estos canales:
+                {t("aside.alsoContact")}
               </p>
 
               <div className="flex flex-col gap-2">
@@ -519,7 +521,7 @@ export default function Contact() {
                     </span>
                     <div className="text-sm">
                       <div className="font-medium">{CONTACT_EMAIL}</div>
-                      <div className="text-xs text-foreground/60">Respuesta en ~4h</div>
+                      <div className="text-xs text-foreground/60">{t("aside.responseTime")}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -527,17 +529,17 @@ export default function Contact() {
                       onClick={handleCopyEmail}
                       className="px-2 py-1 rounded-md border text-sm bg-transparent"
                       style={{ borderColor: "var(--border)" }}
-                      aria-label="Copiar email"
+                      aria-label={t("aria.copyEmail")}
                     >
-                      {copied ? "Copiado" : "Copiar"}
+                      {copied ? t("buttons.copied") : t("buttons.copy")}
                     </button>
                     <a
                       href={`mailto:${CONTACT_EMAIL}`}
                       className="px-2 py-1 rounded-md border text-sm bg-transparent"
                       style={{ borderColor: "var(--border)" }}
-                      aria-label="Enviar email"
+                      aria-label={t("aria.openEmail")}
                     >
-                      Abrir
+                      {t("buttons.open")}
                     </a>
                   </div>
                 </div>
@@ -557,25 +559,25 @@ export default function Contact() {
                           background:
                             "color-mix(in oklab, var(--foreground) 4%, var(--background))",
                         }}
-                        aria-label={`Abrir ${c.name}`}
+                        aria-label={`${t("buttons.open")} ${c.name}`}
                       >
                         <span className="text-lg">{c.icon}</span>
                         <span className="text-sm">{c.name}</span>
                       </a>
                     ))}
-                </div>
               </div>
+            </div>
             </div>
 
             <div
               className="p-4 rounded-xl border shadow-sm bg-card/90 backdrop-blur"
               style={{ borderColor: "var(--border)" }}
             >
-              <h4 className="text-sm font-semibold mb-2">Detalles útiles</h4>
+              <h4 className="text-sm font-semibold mb-2">{t("aside.usefulDetails")}</h4>
               <ul className="text-sm space-y-2 text-foreground/70">
-                <li>Zona horaria: Argentina (GMT-3)</li>
-                <li>Disponibilidad: Freelance / remoto / híbrido</li>
-                <li>Idiomas: Español (nativo), Inglés (avanzado)</li>
+                <li>{t("aside.timezone")}</li>
+                <li>{t("aside.availability")}</li>
+                <li>{t("aside.languages")}</li>
               </ul>
             </div>
 
@@ -588,10 +590,10 @@ export default function Contact() {
               }}
             >
               <h4 className="text-sm font-semibold mb-1">
-                ¿Buscás QA, Automation o Dev?
+                {t("aside.ctaHeading")}
               </h4>
               <p className="text-sm mb-3">
-                Puedo ayudarte con el testing de tu app/web (CI, E2E, API) o desarrollando. ¡Escribime!
+                {t("aside.ctaText")}
               </p>
             </div>
           </motion.aside>

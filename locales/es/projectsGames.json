@@ -1,0 +1,25 @@
+{
+  "heading": "Proyectos (Games • Web • QA)",
+  "toggle": "Cambiar a {mode}",
+  "modeNames": {
+    "simple": "Simple",
+    "advanced": "Avanzado"
+  },
+  "searchPlaceholder": "Buscar por título o tecnología",
+  "searchAria": "Buscar proyectos",
+  "types": {
+    "all": "Todos",
+    "game": "Juegos",
+    "web": "Web",
+    "tool": "Herramientas",
+    "qa": "QA"
+  },
+  "sorts": {
+    "recent": "Más recientes",
+    "oldest": "Más antiguos",
+    "az": "A–Z",
+    "stars": "Popularidad (⭐)"
+  },
+  "sortAria": "Ordenar proyectos",
+  "github": "Ver todo en GitHub"
+}

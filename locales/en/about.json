@@ -1,0 +1,36 @@
+{
+  "heading": "About me",
+  "aria": "About me",
+  "experience": [
+    {
+      "year": "2023 – Present",
+      "title": "QA Engineer",
+      "company": "XYZ Company",
+      "desc": "Automation with Playwright, Cypress and TOSCA. Manual/exploratory testing, bug reporting and CI support."
+    },
+    {
+      "year": "2021 – 2023",
+      "title": "Game Developer (Freelance)",
+      "company": "Indie Projects",
+      "desc": "Prototypes with Godot/Unity, gameplay loops, simple build pipelines and game testing."
+    },
+    {
+      "year": "2019 – 2021",
+      "title": "Software Engineering",
+      "company": "Education",
+      "desc": "Solid foundations of software quality, patterns, testing and SDLC."
+    }
+  ],
+  "intro": "I am a <strong>QA Engineer</strong> and <strong>Game Developer</strong>. I focus on automation, robust testing and clean, stable game experiences.",
+  "skillsHeading": "Skills & tools",
+  "skills": [
+    "TOSCA",
+    "Playwright",
+    "Cypress",
+    "Godot",
+    "Unity",
+    "Automation",
+    "Manual Testing",
+    "Debugging"
+  ]
+}

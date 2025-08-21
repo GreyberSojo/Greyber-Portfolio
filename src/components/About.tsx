@@ -16,6 +16,7 @@ import {
   FaGraduationCap,
 } from "react-icons/fa";
 import { fadeUp } from "@/lib/animations";
+import { useTranslations } from "@/lib/i18n";
 
 /* --------- Reduced motion --------- */
 function usePrefersReducedMotion() {
@@ -31,48 +32,6 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-/* --------- Data --------- */
-const skills: { name: string; icon: IconType }[] = [
-  { name: "TOSCA", icon: FaCogs },
-  { name: "Playwright", icon: FaPlay },
-  { name: "Cypress", icon: FaCode },
-  { name: "Godot", icon: FaGamepad },
-  { name: "Unity", icon: FaGamepad },
-  { name: "Automatización", icon: FaRobot },
-  { name: "Testing Manual", icon: FaClipboardCheck },
-  { name: "Debugging", icon: FaBug },
-];
-
-const experience: {
-  year: string;
-  title: string;
-  company: string;
-  desc: string;
-  icon: IconType;
-}[] = [
-  {
-    year: "2023 – Actualidad",
-    title: "QA Engineer",
-    company: "Empresa XYZ",
-    desc: "Automatización con Playwright, Cypress y TOSCA. Pruebas manuales/exploratorias, reporte de bugs y soporte en CI.",
-    icon: FaBriefcase,
-  },
-  {
-    year: "2021 – 2023",
-    title: "Game Developer (Freelance)",
-    company: "Proyectos Indie",
-    desc: "Prototipos con Godot/Unity, gameplay loops, pipelines simples de build y testing en juegos.",
-    icon: FaGamepad,
-  },
-  {
-    year: "2019 – 2021",
-    title: "Ingeniería de Software",
-    company: "Formación",
-    desc: "Bases sólidas de calidad de software, patrones, testing y SDLC.",
-    icon: FaGraduationCap,
-  },
-];
-
 /* --------- Variants --------- */
 const container = {
   hidden: { opacity: 0 },
@@ -85,16 +44,41 @@ const container = {
 };
 
 export default function About() {
+  const t = useTranslations("about");
   const reduced = usePrefersReducedMotion();
   const mv = reduced
     ? {}
     : { variants: fadeUp, initial: "hidden", whileInView: "show", viewport: { once: true, margin: "-100px" } };
 
+  const skillIcons: IconType[] = [
+    FaCogs,
+    FaPlay,
+    FaCode,
+    FaGamepad,
+    FaGamepad,
+    FaRobot,
+    FaClipboardCheck,
+    FaBug,
+  ];
+  const skills = (t("skills") as string[]).map((name, i) => ({ name, icon: skillIcons[i] }));
+
+  const expData = t("experience") as {
+    year: string;
+    title: string;
+    company: string;
+    desc: string;
+  }[];
+  const experience = [
+    { ...expData[0], icon: FaBriefcase },
+    { ...expData[1], icon: FaGamepad },
+    { ...expData[2], icon: FaGraduationCap },
+  ];
+
   return (
     <section
       id="about"
       role="region"
-      aria-label="Sobre mí"
+      aria-label={t("aria")}
       className="
         relative py-20 scroll-mt-24
         bg-background text-foreground
@@ -126,18 +110,15 @@ export default function About() {
           {...mv}
           className="text-3xl md:text-5xl font-extrabold text-center"
         >
-          Sobre mí
+          {t("heading")}
         </motion.h2>
 
         {/* Intro */}
         <motion.p
           {...mv}
           className="mx-auto mt-6 max-w-3xl text-lg md:text-xl text-foreground/75 text-center"
-        >
-          Soy <span className="font-semibold text-primary">QA Engineer</span> y{" "}
-          <span className="font-semibold text-primary">Game Developer</span>. Me
-          enfoco en automatización, pruebas robustas y experiencias de juego limpias y estables.
-        </motion.p>
+          dangerouslySetInnerHTML={{ __html: t("intro") }}
+        />
 
         {/* Timeline */}
         <motion.ol
@@ -267,7 +248,7 @@ export default function About() {
           viewport={{ once: true }}
           className="mt-16"
         >
-          <h3 className="text-center text-xl font-semibold">Skills y herramientas</h3>
+          <h3 className="text-center text-xl font-semibold">{t("skillsHeading")}</h3>
           <ul className="mt-6 flex flex-wrap justify-center gap-3">
             {skills.map((s, i) => {
               const Icon = s.icon;

@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "@/lib/i18n";
 
 // ------------------------------
 // HOOKS
@@ -287,6 +288,7 @@ function useInfiniteCarousel({
 // COMPONENTE
 // ------------------------------
 export default function ProjectsQA() {
+  const t = useTranslations("projectsQA");
   const [filter, setFilter] = useState<"All" | ProjectType>("All");
   const [timeline, setTimeline] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -411,18 +413,18 @@ export default function ProjectsQA() {
     <section id="projects" className="py-20 bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex items-center justify-between gap-4 mb-8">
-          <h2 className="text-3xl font-bold">🧪 QA Skills</h2>
+          <h2 className="text-3xl font-bold">{t("heading")}</h2>
 
           {/* Filtros */}
           <div className="flex items-center gap-2">
-            {(["All", "Automation", "Manual", "API"] as const).map((f) => (
+            {(["All", "Automation", "Manual", "API"] as const).map((f, i) => (
               <Button
                 key={f}
                 size="sm"
                 variant={filter === f ? "default" : "outline"}
                 onClick={() => setFilter(f)}
               >
-                {f}
+                {(t("filters") as string[])[i]}
               </Button>
             ))}
           </div>
@@ -432,7 +434,7 @@ export default function ProjectsQA() {
         <div className="flex flex-wrap items-center gap-4 mb-6">
           {/* velocidad */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Velocidad</span>
+            <span className="text-sm text-muted-foreground">{t("speed")}</span>
             <div className="flex rounded-md overflow-hidden border border-border">
               {[0.5, 1, 2].map((sf) => (
                 <button
@@ -441,7 +443,7 @@ export default function ProjectsQA() {
                   className={`px-3 py-1 text-sm ${
                     speedFactor === sf ? "bg-primary text-primary-foreground" : "bg-background"
                   }`}
-                  aria-label={`Velocidad ${sf}x`}
+                  aria-label={t("speedAria", { value: String(sf) })}
                 >
                   {sf}x
                 </button>
@@ -730,7 +732,7 @@ export default function ProjectsQA() {
                               rel="noreferrer"
                               className="inline-flex items-center"
                             >
-                              Abrir demo <FaExternalLinkAlt className="ml-2" />
+                              {t("openDemo")} <FaExternalLinkAlt className="ml-2" />
                             </a>
                           </Button>
                         </div>
@@ -778,6 +780,7 @@ function TechBadges({ tech }: { tech: string[] }) {
 }
 
 function ProjectMeta({ p, compact = false }: { p: Project; compact?: boolean }) {
+  const t = useTranslations("projectsQA");
   const statusColor =
     p.metrics.status === "passed"
       ? "text-emerald-600 dark:text-emerald-400"
@@ -793,7 +796,7 @@ function ProjectMeta({ p, compact = false }: { p: Project; compact?: boolean }) 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${compact ? "mb-2" : "mb-3"}`}>
       <span className={`inline-flex items-center gap-1 text-xs ${statusColor}`}>
-        <FaCheckCircle aria-hidden /> {p.metrics.status === "passed" ? "Passed" : "Failed"}
+        <FaCheckCircle aria-hidden /> {t(`status.${p.metrics.status}`)}
       </span>
       <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
         <FaStopwatch aria-hidden /> {secondsToHuman(p.metrics.durationSec)}
