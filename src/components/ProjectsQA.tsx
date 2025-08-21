@@ -48,6 +48,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "@/lib/i18n";
+import { t } from "@/locales";
 
 // ------------------------------
 // HOOKS
@@ -368,11 +369,11 @@ export default function ProjectsQA() {
             >
               <CardHeader className="flex items-center gap-3">
                 {p.icon}
-                <CardTitle className="text-lg font-semibold">{p.title}</CardTitle>
+                <CardTitle className="text-lg font-semibold">{t(p.title)}</CardTitle>
               </CardHeader>
               <CardContent>
                 <ProjectMeta p={p} />
-                <p className="text-sm text-muted-foreground mb-4">{p.description}</p>
+                <p className="text-sm text-muted-foreground mb-4">{t(p.description)}</p>
                 <TechBadges tech={p.tech} />
                 <div className="mt-4 flex items-center gap-2">
                   {p.demoUrl && (
@@ -406,7 +407,7 @@ export default function ProjectsQA() {
   const statusText = useMemo(() => {
     const curr = filtered[activeIndex];
     if (!curr) return "";
-    return `Proyecto ${activeIndex + 1} de ${filtered.length}: ${curr.title}`;
+    return `Proyecto ${activeIndex + 1} de ${filtered.length}: ${t(curr.title)}`;
   }, [activeIndex, filtered]);
 
   return (
@@ -556,12 +557,12 @@ export default function ProjectsQA() {
                       >
                         <CardHeader className="flex items-center gap-3">
                           {p.icon}
-                          <CardTitle className="text-lg font-semibold">{p.title}</CardTitle>
+                          <CardTitle className="text-lg font-semibold">{t(p.title)}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <ProjectMeta p={p} />
 
-                          <p className="text-sm text-muted-foreground mb-4">{p.description}</p>
+                          <p className="text-sm text-muted-foreground mb-4">{t(p.description)}</p>
 
                           <TechBadges tech={p.tech} />
 
@@ -582,7 +583,7 @@ export default function ProjectsQA() {
                                 <TabsContent value="steps">
                                   <ul className="list-disc list-inside text-sm p-2 rounded-md bg-muted">
                                     {p.steps.map((s, i) => (
-                                      <li key={`${p.title}-step-${i}`}>{s}</li>
+                                      <li key={`${p.title}-step-${i}`}>{t(s)}</li>
                                     ))}
                                   </ul>
                                 </TabsContent>
@@ -597,7 +598,7 @@ export default function ProjectsQA() {
                                            "color-mix(in oklab, var(--primary) 22%, var(--border))",
                                        }}
                                   >
-                                    {p.expected}
+                                    {t(p.expected)}
                                   </div>
                                 </TabsContent>
                               )}
@@ -634,7 +635,7 @@ export default function ProjectsQA() {
                       const delta = i - (current % contentLength);
                       shiftByItems(delta);
                     }}
-                    aria-label={`Ir a ${p.title}`}
+                    aria-label={`Ir a ${t(p.title)}`}
                     className={`h-2.5 rounded-full transition-all ${
                       activeIndex === i
                         ? "w-6 bg-primary"
@@ -655,9 +656,9 @@ export default function ProjectsQA() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     {filtered[openIndex].icon}
-                    {filtered[openIndex].title}
+                    {t(filtered[openIndex].title)}
                   </DialogTitle>
-                  <DialogDescription>{filtered[openIndex].description}</DialogDescription>
+                  <DialogDescription>{t(filtered[openIndex].description)}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4">
@@ -692,7 +693,7 @@ export default function ProjectsQA() {
                       <TabsContent value="steps">
                         <ul className="list-disc list-inside text-sm p-3 rounded-md bg-muted">
                           {filtered[openIndex].steps!.map((s, i) => (
-                            <li key={`modal-step-${i}`}>{s}</li>
+                            <li key={`modal-step-${i}`}>{t(s)}</li>
                           ))}
                         </ul>
                       </TabsContent>
@@ -709,7 +710,7 @@ export default function ProjectsQA() {
                               "color-mix(in oklab, var(--primary) 22%, var(--border))",
                           }}
                         >
-                          {filtered[openIndex].expected}
+                          {t(filtered[openIndex].expected)}
                         </div>
                       </TabsContent>
                     )}
@@ -718,7 +719,7 @@ export default function ProjectsQA() {
                       <div className="flex flex-wrap gap-2 mb-3">
                         {filtered[openIndex].details.map((d, i) => (
                           <Badge key={`detail-${i}`} variant="outline">
-                            {d}
+                            {t(d)}
                           </Badge>
                         ))}
                       </div>

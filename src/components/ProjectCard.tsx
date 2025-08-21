@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, KeyboardEvent } from "react";
+import { t } from "@/locales";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,7 +63,7 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
       className={cn(cardVariants({ density }))}
       role={onOpen ? "button" : undefined}
       tabIndex={onOpen ? 0 : -1}
-      aria-label={onOpen ? `Abrir vista rápida de ${project.title}` : undefined}
+      aria-label={onOpen ? `Abrir vista rápida de ${t(project.title)}` : undefined}
       onKeyDown={onOpen ? handleKey : undefined}
       onClick={onOpen ? () => onOpen(project) : undefined}
     >
@@ -72,7 +73,7 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
         {project.cover.type === "image" ? (
           <Image
             src={project.cover.src}
-            alt={project.title}
+            alt={t(project.title)}
             fill
             sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 33vw"
             className="object-cover"
@@ -107,8 +108,8 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
               </span>
             ))}
           </div>
-          <h3 className="text-white text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-          <p className="text-white/80 text-xs line-clamp-2">{project.summary}</p>
+          <h3 className="text-white text-lg font-semibold drop-shadow-sm">{t(project.title)}</h3>
+          <p className="text-white/80 text-xs line-clamp-2">{t(project.summary)}</p>
 
           <div className="mt-2 flex gap-2 pointer-events-auto">
             {project.demo && (
@@ -148,7 +149,7 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
             {project.type.toUpperCase()} • {project.year}
             {project.status ? ` • ${project.status}` : ""}
           </div>
-          <div className="font-medium">{project.title}</div>
+          <div className="font-medium">{t(project.title)}</div>
         </div>
         {project.metrics?.stars != null && (
           <div className="text-xs px-2 py-1 rounded-full border border-yellow-400/50 bg-yellow-50/50 dark:bg-yellow-500/10 text-yellow-800 dark:text-yellow-300">

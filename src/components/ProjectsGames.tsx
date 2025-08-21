@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
 import { PROJECTS, type Project } from "@/data/projects";
 import { useTranslations } from "@/lib/i18n";
+import { t } from "@/locales";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
@@ -178,7 +179,7 @@ function QuickViewModal({
           <div className="relative aspect-[16/9] bg-background">
             <Image
               src={project.cover.src}
-              alt={project.title}
+              alt={t(project.title)}
               fill
               className="object-cover"
               placeholder="blur"
@@ -189,8 +190,8 @@ function QuickViewModal({
             </div>
           </div>
           <div className="p-4 md:p-6 flex flex-col gap-3">
-            <h3 className="text-xl md:text-2xl font-semibold">{project.title}</h3>
-            <p className="text-sm text-foreground/70">{project.summary}</p>
+            <h3 className="text-xl md:text-2xl font-semibold">{t(project.title)}</h3>
+            <p className="text-sm text-foreground/70">{t(project.summary)}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -312,7 +313,7 @@ export default function ProjectsGames() {
   const [active, setActive] = useState<Project | null>(null);
 
   const allTags = useMemo(
-    () => Array.from(new Set(PROJECTS.flatMap((p) => p.tags))).sort(),
+    () => Array.from(new Set(PROJECTS.flatMap((p) => p.tags.map(t)))).sort(),
     []
   );
 
@@ -326,12 +327,16 @@ export default function ProjectsGames() {
     const term = search.trim().toLowerCase();
     let list = PROJECTS.filter((p) => {
       const matchType = selectedType === "all" || p.type === selectedType;
-      const matchTags = selectedTags.length === 0 || selectedTags.every((t) => p.tags.includes(t));
+      const translatedTags = p.tags.map(t);
+      const matchTags =
+        selectedTags.length === 0 || selectedTags.every((tag) => translatedTags.includes(tag));
+      const title = t(p.title).toLowerCase();
+      const summary = t(p.summary).toLowerCase();
       const matchSearch =
         !term ||
-        p.title.toLowerCase().includes(term) ||
-        p.summary.toLowerCase().includes(term) ||
-        p.tech.some((t) => t.toLowerCase().includes(term));
+        title.includes(term) ||
+        summary.includes(term) ||
+        p.tech.some((tech) => tech.toLowerCase().includes(term));
       return matchType && matchTags && matchSearch;
     });
     switch (sort) {
@@ -342,7 +347,7 @@ export default function ProjectsGames() {
         list = list.sort((a, b) => a.year - b.year);
         break;
       case "az":
-        list = list.sort((a, b) => a.title.localeCompare(b.title));
+        list = list.sort((a, b) => t(a.title).localeCompare(t(b.title)));
         break;
       case "stars":
         list = list.sort((a, b) => (b.metrics?.stars ?? 0) - (a.metrics?.stars ?? 0));

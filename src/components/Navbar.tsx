@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { FaGlobe } from "react-icons/fa";
 import DarkModeToggle from "./DarkModeToggle";
@@ -61,6 +62,41 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<string>("#home");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [locale, setLocale] = useState("ES");
+
+  // Control de locale con persistencia en URL y localStorage
+  useEffect(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    const currentLocale = segments[0];
+    const savedLocale =
+      typeof window !== "undefined" ? localStorage.getItem("locale") : null;
+    const initialLocale = (currentLocale || savedLocale || "es").toLowerCase();
+
+    if (!currentLocale || currentLocale !== initialLocale) {
+      const newPath =
+        "/" + [initialLocale, ...segments.slice(currentLocale ? 1 : 0)].join("/");
+      router.replace(newPath + window.location.hash);
+    }
+
+    setLocale(initialLocale.toUpperCase());
+    if (typeof window !== "undefined") {
+      localStorage.setItem("locale", initialLocale);
+    }
+  }, [pathname, router]);
+
+  const handleLocaleChange = (value: string) => {
+    const normalized = value.toLowerCase();
+    setLocale(value);
+    const segments = pathname.split("/").filter(Boolean);
+    segments[0] = normalized;
+    const newPath = "/" + segments.join("/");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("locale", normalized);
+    }
+    router.push(newPath + window.location.hash);
+  };
 
   // Barra de progreso superior (usa color de marca)
   const { scrollYProgress } = useScroll();
@@ -216,7 +252,8 @@ export default function Navbar() {
                   <select
                     id="lang"
                     className="bg-transparent outline-none cursor-pointer text-foreground/70 hover:text-foreground"
-                    defaultValue="ES"
+                    value={locale}
+                    onChange={(e) => handleLocaleChange(e.target.value)}
                     aria-label="Cambiar idioma"
                   >
                     <option value="ES">ES</option>
