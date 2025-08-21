@@ -1,276 +1,400 @@
 // src/components/ProjectsGames.tsx
 "use client";
 
-import { useMemo } from "react";
-import Link from "next/link";
+import { useMemo, useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
 import { PROJECTS, type Project } from "@/data/projects";
 
-/** Blur tiny placeholder para <Image> */
-const BLUR = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNTAwJyBoZWlnaHQ9JzI4MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjMjIyJy8+PC9zdmc+";
+// ---- Types & constants ----
+export type ProjectType = "game" | "web" | "tool" | "qa";
+type Mode = "simple" | "advanced";
 
-/* ---------- MODO SIMPLE (0–4 proyectos) ---------- */
-function SimpleGrid({ items }: { items: readonly Project[] }) {
-  if (items.length === 0) {
-    return (
-      <div className="max-w-3xl mx-auto text-center rounded-2xl border border-border bg-foreground/[.02] p-10">
-        <h3 className="text-xl font-semibold mb-2">Aún no hay proyectos</h3>
-        <p className="text-foreground/70 mb-6">
-          Estoy construyendo cosas nuevas. Vuelve pronto o mira mi GitHub.
-        </p>
-        <div className="flex gap-3 justify-center">
-          <a href="https://github.com/greyber" target="_blank" rel="noopener noreferrer">
-            <Button variant="outline">Ir a GitHub</Button>
-          </a>
-          <Link href="#contact">
-            <Button>Contactar</Button>
-          </Link>
+const TYPES: { label: string; value: ProjectType | "all" }[] = [
+  { label: "Todos", value: "all" },
+  { label: "Juegos", value: "game" },
+  { label: "Web", value: "web" },
+  { label: "Herramientas", value: "tool" },
+  { label: "QA", value: "qa" },
+];
+
+const SORTS = [
+  { label: "Más recientes", value: "recent" },
+  { label: "Más antiguos", value: "oldest" },
+  { label: "A–Z", value: "az" },
+  { label: "Popularidad (⭐)", value: "stars" },
+] as const;
+
+const BLUR_DATA_URL =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNTAwJyBoZWlnaHQ9JzI4MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjMjIyJy8+PC9zdmc+";
+
+// ---- Utils ----
+const track = (event: string, data?: Record<string, unknown>) =>
+  console.log(`[analytics] ${event}`, data);
+
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduced(mq.matches);
+    onChange();
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+  return reduced;
+}
+
+// ---- Filtros ----
+function FiltersBar({
+  search,
+  setSearch,
+  selectedType,
+  setSelectedType,
+  allTags,
+  selectedTags,
+  toggleTag,
+  sort,
+  setSort,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  selectedType: ProjectType | "all";
+  setSelectedType: (t: ProjectType | "all") => void;
+  allTags: string[];
+  selectedTags: string[];
+  toggleTag: (t: string) => void;
+  sort: typeof SORTS[number]["value"];
+  setSort: (s: typeof SORTS[number]["value"]) => void;
+}) {
+  return (
+    <div className="max-w-6xl mx-auto mb-8 flex flex-col gap-4">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por título o tecnología"
+          className="flex-1 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          aria-label="Buscar proyectos"
+        />
+
+        <div className="flex flex-wrap gap-2">
+          {TYPES.map((t) => {
+            const active = selectedType === t.value;
+            return (
+              <button
+                key={t.value}
+                onClick={() => setSelectedType(t.value)}
+                className={`px-3 py-2 rounded-xl text-sm border transition ${
+                  active
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-foreground/[.03] border-border hover:bg-foreground/[.06]"
+                }`}
+                aria-pressed={active}
+              >
+                {t.label}
+              </button>
+            );
+          })}
         </div>
+
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as any)}
+          className="px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          aria-label="Ordenar proyectos"
+        >
+          {SORTS.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
       </div>
-    );
-  }
+
+      <div className="flex flex-wrap gap-2">
+        {allTags.map((tag) => {
+          const active = selectedTags.includes(tag);
+          return (
+            <button
+              key={tag}
+              onClick={() => toggleTag(tag)}
+              className={`px-3 py-1.5 rounded-full text-xs border transition ${
+                active
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-foreground/[.03] border-border hover:bg-foreground/[.06]"
+              }`}
+              aria-pressed={active}
+            >
+              #{tag}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ---- Modal de vista rápida ----
+function QuickViewModal({
+  project,
+  onClose,
+}: {
+  project: Project | null;
+  onClose: () => void;
+}) {
+  const reduce = usePrefersReducedMotion();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  if (!project) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-      {items.map((p) => (
-        <Card
-          key={p.slug}
-          className="overflow-hidden hover:shadow-lg transition-shadow"
-          style={{
-            borderColor: "color-mix(in oklab, var(--primary) 12%, var(--border))",
-          }}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={reduce ? { duration: 0 } : { duration: 0.2 }}
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ y: reduce ? 0 : 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: reduce ? 0 : 20, opacity: 0 }}
+          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 16 }}
+          className="w-full max-w-3xl bg-background rounded-2xl overflow-hidden border border-border shadow-xl"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative aspect-[16/9] bg-foreground/[.03]">
-            {p.cover.type === "image" ? (
-              <Image
-                src={p.cover.src}
-                alt={p.title}
-                fill
-                className="object-cover"
-                placeholder="blur"
-                blurDataURL={BLUR}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            ) : (
-              // Si es video, mostramos el poster (evita peso extra en un portfolio pequeño)
-              <Image
-                src={p.cover.poster ?? "/covers/fallback.webp"}
-                alt={p.title}
-                fill
-                className="object-cover"
-                placeholder="blur"
-                blurDataURL={BLUR}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            )}
-            <div
-              className="absolute left-2 top-2 text-[11px] px-2 py-0.5 rounded-full border"
-              style={{
-                background: "color-mix(in oklab, var(--foreground) 7%, var(--background))",
-                borderColor: "var(--border)",
-              }}
-            >
-              {p.type.toUpperCase()} • {p.year}
+          <div className="relative aspect-[16/9] bg-background">
+            <Image
+              src={project.cover.src}
+              alt={project.title}
+              fill
+              className="object-cover"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
+            />
+            <div className="absolute left-2 top-2 text-xs px-2 py-1 rounded-full bg-black/50 text-white">
+              {project.type.toUpperCase()} • {project.year}
             </div>
           </div>
+          <div className="p-4 md:p-6 flex flex-col gap-3">
+            <h3 className="text-xl md:text-2xl font-semibold">{project.title}</h3>
+            <p className="text-sm text-foreground/70">{project.summary}</p>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base md:text-lg">{p.title}</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <p className="text-sm text-foreground/70 line-clamp-2">{p.summary}</p>
+// ---- Grilla simple ----
+function SimpleGrid({ items }: { items: Project[] }) {
+  const cards: ProjectCardData[] = useMemo(
+    () =>
+      items.map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        summary: p.summary,
+        year: p.year,
+        type: p.type,
+        tech: p.tech,
+        tags: p.tags,
+        cover: p.cover,
+        demo: p.demo,
+        repo: p.repo,
+        caseStudy: p.caseStudy,
+        status: p.status,
+        metrics: p.metrics,
+      })),
+    [items]
+  );
 
-            <div className="flex flex-wrap gap-2 mt-3">
-              {p.tech.slice(0, 3).map((t) => (
-                <span
-                  key={t}
-                  className="text-[11px] px-2 py-0.5 rounded-full border"
-                  style={{
-                    background: "color-mix(in oklab, var(--foreground) 4%, var(--background))",
-                    borderColor: "var(--border)",
-                  }}
-                >
-                  {t}
-                </span>
-              ))}
-              {p.tech.length > 3 && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full border border-transparent text-foreground/50">
-                  +{p.tech.length - 3}
-                </span>
-              )}
-            </div>
-
-            <div className="flex gap-2 mt-4">
-              {p.demo && (
-                <Link href={p.demo} target={p.demo.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
-                  <Button size="sm">Demo</Button>
-                </Link>
-              )}
-              {p.repo && (
-                <a href={p.repo} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="outline">Repo</Button>
-                </a>
-              )}
-              {p.caseStudy && (
-                <Link href={p.caseStudy}>
-                  <Button size="sm" variant="secondary">Caso de estudio</Button>
-                </Link>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      {cards.map((p) => (
+        <ProjectCard key={p.slug} project={p} onOpen={() => {}} />
       ))}
     </div>
   );
 }
 
-/* ---------- MODO AVANZADO (5+ proyectos) ----------
-   Reusa tu UI actual pero MUY resumida: filtros básicos + grid. */
-function AdvancedGrid({ items }: { items: readonly Project[] }) {
-  // Orden por año desc (sencillo y útil)
-  const ordered = useMemo(() => [...items].sort((a, b) => b.year - a.year), [items]);
+// ---- Grilla avanzada ----
+function AdvancedGrid({
+  items,
+  filtered,
+  search,
+  setSearch,
+  selectedType,
+  setSelectedType,
+  allTags,
+  selectedTags,
+  toggleTag,
+  sort,
+  setSort,
+  onOpen,
+}: {
+  items: Project[];
+  filtered: Project[];
+  search: string;
+  setSearch: (v: string) => void;
+  selectedType: ProjectType | "all";
+  setSelectedType: (t: ProjectType | "all") => void;
+  allTags: string[];
+  selectedTags: string[];
+  toggleTag: (t: string) => void;
+  sort: typeof SORTS[number]["value"];
+  setSort: (s: typeof SORTS[number]["value"]) => void;
+  onOpen: (p: Project) => void;
+}) {
+  const cards: ProjectCardData[] = useMemo(
+    () =>
+      filtered.map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        summary: p.summary,
+        year: p.year,
+        type: p.type,
+        tech: p.tech,
+        tags: p.tags,
+        cover: p.cover,
+        demo: p.demo,
+        repo: p.repo,
+        caseStudy: p.caseStudy,
+        status: p.status,
+        metrics: p.metrics,
+      })),
+    [filtered]
+  );
 
   return (
     <>
-      <p className="text-center text-foreground/70 max-w-2xl mx-auto mb-10">
-        Explora todos mis proyectos. Puedes ver más detalles en cada tarjeta.
-      </p>
-
+      <FiltersBar
+        search={search}
+        setSearch={setSearch}
+        selectedType={selectedType}
+        setSelectedType={setSelectedType}
+        allTags={allTags}
+        selectedTags={selectedTags}
+        toggleTag={toggleTag}
+        sort={sort}
+        setSort={setSort}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {ordered.map((p) => (
-          <Card
-            key={p.slug}
-            className="overflow-hidden hover:shadow-lg transition-shadow"
-            style={{ borderColor: "color-mix(in oklab, var(--primary) 12%, var(--border))" }}
-          >
-            <div className="relative aspect-[16/9] bg-foreground/[.03]">
-              {p.cover.type === "image" ? (
-                <Image
-                  src={p.cover.src}
-                  alt={p.title}
-                  fill
-                  className="object-cover"
-                  placeholder="blur"
-                  blurDataURL={BLUR}
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                />
-              ) : (
-                <Image
-                  src={p.cover.poster ?? "/covers/fallback.webp"}
-                  alt={p.title}
-                  fill
-                  className="object-cover"
-                  placeholder="blur"
-                  blurDataURL={BLUR}
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                />
-              )}
-            </div>
-
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base md:text-lg">{p.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <p className="text-sm text-foreground/70 line-clamp-2">{p.summary}</p>
-
-              <div className="flex flex-wrap gap-2 mt-3">
-                {p.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[11px] px-2 py-0.5 rounded-full border"
-                    style={{
-                      borderColor: "color-mix(in oklab, var(--primary) 35%, var(--border))",
-                      background: "color-mix(in oklab, var(--primary) 6%, var(--background))",
-                      color: "color-mix(in oklab, var(--primary) 85%, var(--foreground))",
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex gap-2 mt-4">
-                {p.demo && (
-                  <Link href={p.demo} target={p.demo.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
-                    <Button size="sm">Demo</Button>
-                  </Link>
-                )}
-                {p.repo && (
-                  <a href={p.repo} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" variant="outline">Repo</Button>
-                  </a>
-                )}
-                {p.caseStudy && (
-                  <Link href={p.caseStudy}>
-                    <Button size="sm" variant="secondary">Caso</Button>
-                  </Link>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {cards.map((p) => {
+          const full = filtered.find((f) => f.slug === p.slug)!;
+          return <ProjectCard key={p.slug} project={p} onOpen={() => onOpen(full)} />;
+        })}
       </div>
     </>
   );
 }
 
-/* ---------- Componente principal adaptativo ---------- */
+// ---- Principal con botón toggle ----
 export default function ProjectsGames() {
-  const count = PROJECTS.length;
-  const simpleMode = count <= 4;
+  const reduce = usePrefersReducedMotion();
+  const [mode, setMode] = useState<Mode>("simple");
+  const [search, setSearch] = useState("");
+  const [selectedType, setSelectedType] = useState<ProjectType | "all">("all");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [sort, setSort] = useState<(typeof SORTS)[number]["value"]>("recent");
+  const [active, setActive] = useState<Project | null>(null);
 
-  const schema = useMemo(() => {
-    const items = PROJECTS.map((p) => ({
-      "@context": "https://schema.org",
-      "@type": p.type === "game" ? "VideoGame" : "CreativeWork",
-      name: p.title,
-      description: p.summary,
-      url: p.caseStudy || p.demo || "/",
-      inLanguage: "es",
-      dateCreated: `${p.year}-01-01`,
-      keywords: [...p.tech, ...p.tags].join(", "),
-    }));
-    return JSON.stringify(items);
-  }, []);
+  const allTags = useMemo(
+    () => Array.from(new Set(PROJECTS.flatMap((p) => p.tags))).sort(),
+    []
+  );
+
+  const toggleTag = useCallback(
+    (t: string) =>
+      setSelectedTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])),
+    []
+  );
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    let list = PROJECTS.filter((p) => {
+      const matchType = selectedType === "all" || p.type === selectedType;
+      const matchTags = selectedTags.length === 0 || selectedTags.every((t) => p.tags.includes(t));
+      const matchSearch =
+        !term ||
+        p.title.toLowerCase().includes(term) ||
+        p.summary.toLowerCase().includes(term) ||
+        p.tech.some((t) => t.toLowerCase().includes(term));
+      return matchType && matchTags && matchSearch;
+    });
+    switch (sort) {
+      case "recent":
+        list = list.sort((a, b) => b.year - a.year);
+        break;
+      case "oldest":
+        list = list.sort((a, b) => a.year - b.year);
+        break;
+      case "az":
+        list = list.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "stars":
+        list = list.sort((a, b) => (b.metrics?.stars ?? 0) - (a.metrics?.stars ?? 0));
+        break;
+    }
+    return list;
+  }, [search, selectedType, selectedTags, sort]);
 
   return (
-    <section id="game-dev" className="w-full bg-background text-foreground py-16 px-6" aria-labelledby="projects-heading">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schema }} />
+    <section className="w-full bg-background text-foreground py-16 px-6">
       <motion.h2
-        id="projects-heading"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={reduce ? false : { opacity: 0, y: 20 }}
+        whileInView={reduce ? {} : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.6 }}
         className="text-3xl md:text-4xl font-bold mb-3 text-center"
       >
-        Proyectos
+        Proyectos (Games • Web • QA)
       </motion.h2>
 
-      {simpleMode ? (
-        <>
-          <p className="text-center text-foreground/70 max-w-xl mx-auto mb-10">
-            Un vistazo rápido a lo que estoy construyendo.
-          </p>
-          <SimpleGrid items={[...PROJECTS]} />
-          {/* CTA global visible solo si hay proyectos */}
-          {PROJECTS.length > 0 && (
-            <div className="mt-10 flex items-center justify-center gap-3">
-              <a href="https://github.com/greyber" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline">Ver GitHub</Button>
-              </a>
-              <Link href="#contact">
-                <Button>Hablemos</Button>
-              </Link>
-            </div>
-          )}
-        </>
+      <div className="text-center mb-8">
+        <Button
+          variant="outline"
+          onClick={() => setMode(mode === "simple" ? "advanced" : "simple")}
+        >
+          Cambiar a {mode === "simple" ? "Avanzado" : "Simple"}
+        </Button>
+      </div>
+
+      {mode === "advanced" ? (
+        <AdvancedGrid
+          items={[...PROJECTS]}
+          filtered={filtered}
+          search={search}
+          setSearch={setSearch}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          allTags={allTags}
+          selectedTags={selectedTags}
+          toggleTag={toggleTag}
+          sort={sort}
+          setSort={setSort}
+          onOpen={(p) => setActive(p)}
+        />
       ) : (
-        <AdvancedGrid items={[...PROJECTS]} />
+        <SimpleGrid items={[...PROJECTS]} />
       )}
+
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a href="https://github.com/greyber" target="_blank" rel="noopener noreferrer">
+          <Button variant="outline">Ver todo en GitHub</Button>
+        </a>
+      </div>
+
+      <QuickViewModal project={active} onClose={() => setActive(null)} />
     </section>
   );
 }

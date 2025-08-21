@@ -1,3 +1,4 @@
+// src/components/Contact.tsx
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -10,29 +11,38 @@ import {
   FaClipboard,
 } from "react-icons/fa";
 
-type ContactLink = { name: string; link: string; icon: React.ReactNode };
-
+/* ==== Config ==== */
 const CONTACT_EMAIL = "greybersojo@gmail.com";
 const CONTACT_NAME = "Greyber Sojo";
 
+/* ==== Prefers reduced motion ==== */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduced(mq.matches);
+    onChange();
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+  return reduced;
+}
+
+type ContactLink = { name: string; link: string; icon: React.ReactNode };
+
 export default function Contact() {
-  // social / quick links (editar)
+  const reduce = usePrefersReducedMotion();
+
+  // social / quick links
   const contactLinks: ContactLink[] = [
     { name: "Email", link: `mailto:${CONTACT_EMAIL}`, icon: <FaEnvelope /> },
-    {
-      name: "LinkedIn",
-      link: "https://linkedin.com/in/greyber-sojo",
-      icon: <FaLinkedin />,
-    },
+    { name: "LinkedIn", link: "https://linkedin.com/in/greyber-sojo", icon: <FaLinkedin /> },
     { name: "GitHub", link: "https://github.com/GreyberSojo", icon: <FaGithub /> },
-    {
-      name: "Itch.io",
-      link: "https://itch.io/profile",
-      icon: <FaItchIo />,
-    },
+    { name: "Itch.io", link: "https://itch.io/profile", icon: <FaItchIo /> },
   ];
 
-  // form state
+  /* ==== Form state ==== */
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -45,7 +55,6 @@ export default function Contact() {
   const [copied, setCopied] = useState(false);
   const mountedRef = useRef(false);
 
-  // autosave key
   const STORAGE_KEY = "contact_form_autosave_v1";
 
   // Load saved draft on mount
@@ -68,20 +77,18 @@ export default function Contact() {
     };
   }, []);
 
-  // autosave to localStorage when fields change
+  // Autosave
   useEffect(() => {
     const payload = { name, email, subject, message, savedAt: Date.now() };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
-      // ignore quota issues
+      /* ignore quota */
     }
   }, [name, email, subject, message]);
 
-  // simple email validator
-  const validateEmail = (e: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
-
+  // Validation
+  const validateEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
   function validateForm() {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = "El nombre es requerido.";
@@ -89,20 +96,15 @@ export default function Contact() {
     else if (!validateEmail(email)) errs.email = "Introduce un correo válido.";
     if (!message.trim() || message.trim().length < 10)
       errs.message = "El mensaje debe tener al menos 10 caracteres.";
-    // honeypot: if filled, it's spam
     if (website.trim()) errs.website = "Spam detectado.";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
-  // fallback mailto builder
+  // mailto fallback
   function buildMailto(): string {
-    const subjectEncoded = encodeURIComponent(
-      subject || `Contacto desde web - ${CONTACT_NAME}`
-    );
-    const body = encodeURIComponent(
-      `Nombre: ${name}\nEmail: ${email}\n\n${message}`
-    );
+    const subjectEncoded = encodeURIComponent(subject || `Contacto desde web - ${CONTACT_NAME}`);
+    const body = encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\n\n${message}`);
     return `mailto:${CONTACT_EMAIL}?subject=${subjectEncoded}&body=${body}`;
   }
 
@@ -110,7 +112,6 @@ export default function Contact() {
     e.preventDefault();
     setStatus(null);
     setStatusMessage(null);
-
     if (!validateForm()) {
       setStatus("error");
       setStatusMessage("Corrige los errores antes de enviar.");
@@ -118,8 +119,6 @@ export default function Contact() {
     }
 
     setSending(true);
-
-    // payload
     const payload = {
       name: name.trim(),
       email: email.trim(),
@@ -127,7 +126,6 @@ export default function Contact() {
       message: message.trim(),
     };
 
-    // 1) intento llamar a /api/contact (si existe)
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -138,7 +136,6 @@ export default function Contact() {
       if (res.ok) {
         setStatus("success");
         setStatusMessage("Mensaje enviado. ¡Gracias! Te respondo pronto.");
-        // clear
         setName("");
         setEmail("");
         setSubject("");
@@ -146,58 +143,50 @@ export default function Contact() {
         localStorage.removeItem(STORAGE_KEY);
         setErrors({});
       } else {
-        // servidor devolvió error -> fallback a mailto
         const text = await res.text().catch(() => null);
         console.warn("API responded non-OK:", res.status, text);
         setStatus("error");
-        setStatusMessage(
-          "No fue posible enviar desde el servidor. Abriéndose cliente de correo como alternativa."
-        );
+        setStatusMessage("No fue posible enviar desde el servidor. Abriendo tu cliente de correo…");
         window.setTimeout(() => {
           window.location.href = buildMailto();
-        }, 600);
+        }, 500);
       }
     } catch (err) {
-      // probablemente no exista la API (404) o network error -> fallback mailto
       console.warn("Error enviando a /api/contact:", err);
       setStatus("error");
-      setStatusMessage(
-        "No hay backend disponible. Se abrirá tu cliente de correo para enviar el mensaje."
-      );
+      setStatusMessage("No hay backend disponible. Se abrirá tu cliente de correo.");
       window.setTimeout(() => {
         window.location.href = buildMailto();
-      }, 600);
+      }, 500);
     } finally {
       setSending(false);
     }
   }
 
-  // copy email to clipboard
+  // Copy email to clipboard
   const handleCopyEmail = async () => {
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(CONTACT_EMAIL);
       } else {
-        // fallback
-        const textArea = document.createElement("textarea");
-        textArea.value = CONTACT_EMAIL;
-        // avoid scrolling to bottom
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
+        const ta = document.createElement("textarea");
+        ta.value = CONTACT_EMAIL;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
         document.execCommand("copy");
-        document.body.removeChild(textArea);
+        document.body.removeChild(ta);
       }
       setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      setTimeout(() => setCopied(false), 1500);
     } catch {
       setCopied(false);
     }
   };
 
-  // create and download vCard (.vcf)
+  // vCard
   const handleDownloadVCard = () => {
     const vcard = [
       "BEGIN:VCARD",
@@ -217,13 +206,19 @@ export default function Contact() {
     URL.revokeObjectURL(url);
   };
 
-  // small animated check (success)
+  // Success badge
   const SuccessBadge = () => (
     <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 18 }}
-      className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm"
+      initial={reduce ? false : { scale: 0.9, opacity: 0 }}
+      animate={reduce ? {} : { scale: 1, opacity: 1 }}
+      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 18 }}
+      className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm"
+      style={{
+        background: "color-mix(in oklab, var(--primary) 18%, var(--background))",
+        color: "color-mix(in oklab, var(--primary) 75%, var(--foreground))",
+        border: "1px solid",
+        borderColor: "color-mix(in oklab, var(--primary) 35%, var(--border))",
+      }}
       role="status"
       aria-live="polite"
     >
@@ -234,49 +229,78 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-20 px-6 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white scroll-mt-24"
+      className="py-20 px-6 scroll-mt-24 bg-background text-foreground"
       aria-labelledby="contact-heading"
     >
-      <div className="mx-auto max-w-5xl">
+      {/* Fondo suave con la marca */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom right, color-mix(in oklab, var(--primary) 5%, var(--background)), var(--background))",
+        }}
+      />
+      {/* Grid muy sutil */}
+      <div
+        aria-hidden
+        className="
+          absolute inset-0
+          opacity-[0.03] dark:opacity-[0.06]
+          bg-[linear-gradient(to_right,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px)]
+          bg-[size:32px_32px]
+        "
+      />
+
+      <div className="relative z-10 mx-auto max-w-5xl">
         <motion.h2
           id="contact-heading"
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          whileInView={reduce ? {} : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
           viewport={{ once: true }}
           className="text-3xl md:text-4xl font-bold mb-6 text-center"
         >
-          ¿Hablamos? <span className="text-cyan-500">Contacto</span>
+          ¿Hablamos? <span className="text-primary">Contacto</span>
         </motion.h2>
 
-        <p className="text-center text-sm text-muted-foreground max-w-2xl mx-auto mb-8">
-          Si tienes un proyecto, una duda técnica o quieres colaborar, escribeme. Respondere lo antes posible.
+        <p className="text-center text-sm text-foreground/70 max-w-2xl mx-auto mb-8">
+          Si tenés un proyecto, una duda técnica o querés colaborar, escribime. Respondo lo antes posible.
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* FORM */}
           <motion.form
             onSubmit={handleSubmit}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.05 }}
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            whileInView={reduce ? {} : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.05 }}
             viewport={{ once: true }}
-            className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700"
+            className="p-6 rounded-xl border shadow-sm bg-card/90 backdrop-blur"
             aria-describedby="contact-form-desc"
+            style={{ borderColor: "var(--border)" }}
           >
             <div id="contact-form-desc" className="sr-only">
               Formulario de contacto: nombre, email, asunto y mensaje.
             </div>
 
-            {/* status messages */}
+            {/* Status */}
             <div className="flex items-center justify-between mb-4 gap-3">
-              <div>
+              <div aria-live="polite">
                 {status === "success" && <SuccessBadge />}
                 {status === "error" && statusMessage && (
                   <div
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-sm"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm"
+                    style={{
+                      background:
+                        "color-mix(in oklab, var(--destructive) 12%, var(--background))",
+                      color:
+                        "color-mix(in oklab, var(--destructive) 70%, var(--foreground))",
+                      border: "1px solid",
+                      borderColor:
+                        "color-mix(in oklab, var(--destructive) 35%, var(--border))",
+                    }}
                     role="status"
-                    aria-live="polite"
                   >
                     ⚠ {statusMessage}
                   </div>
@@ -287,7 +311,8 @@ export default function Contact() {
                 <button
                   type="button"
                   onClick={handleCopyEmail}
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md border text-sm bg-gray-50 dark:bg-gray-900"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md border text-sm bg-transparent"
+                  style={{ borderColor: "var(--border)" }}
                   aria-label="Copiar email"
                 >
                   <FaClipboard />
@@ -297,14 +322,15 @@ export default function Contact() {
                 <button
                   type="button"
                   onClick={handleDownloadVCard}
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md border text-sm bg-gray-50 dark:bg-gray-900"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md border text-sm bg-transparent"
+                  style={{ borderColor: "var(--border)" }}
                 >
                   Descargar vCard
                 </button>
               </div>
             </div>
 
-            {/* GRID INPUTS */}
+            {/* Grid inputs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label className="flex flex-col">
                 <span className="text-sm font-medium mb-1">Nombre</span>
@@ -316,12 +342,18 @@ export default function Contact() {
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? "error-name" : undefined}
                   placeholder="Tu nombre"
-                  className={`px-3 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-transparent ${
-                    errors.name ? "border-rose-500" : "border-gray-200 dark:border-gray-700"
-                  }`}
+                  className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
+                  style={{
+                    borderColor: errors.name
+                      ? "color-mix(in oklab, var(--destructive) 50%, var(--border))"
+                      : "var(--border)",
+                    boxShadow: "none",
+                    outlineColor: "transparent",
+                  }}
                 />
                 {errors.name && (
-                  <span id="error-name" className="text-rose-600 text-sm mt-1">
+                  <span id="error-name" className="text-sm mt-1"
+                    style={{ color: "color-mix(in oklab, var(--destructive) 70%, var(--foreground))" }}>
                     {errors.name}
                   </span>
                 )}
@@ -337,12 +369,16 @@ export default function Contact() {
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "error-email" : undefined}
                   placeholder="tu@correo.com"
-                  className={`px-3 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-transparent ${
-                    errors.email ? "border-rose-500" : "border-gray-200 dark:border-gray-700"
-                  }`}
+                  className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
+                  style={{
+                    borderColor: errors.email
+                      ? "color-mix(in oklab, var(--destructive) 50%, var(--border))"
+                      : "var(--border)",
+                  }}
                 />
                 {errors.email && (
-                  <span id="error-email" className="text-rose-600 text-sm mt-1">
+                  <span id="error-email" className="text-sm mt-1"
+                    style={{ color: "color-mix(in oklab, var(--destructive) 70%, var(--foreground))" }}>
                     {errors.email}
                   </span>
                 )}
@@ -357,14 +393,30 @@ export default function Contact() {
                 type="text"
                 name="subject"
                 placeholder="Sobre..."
-                className="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-transparent"
+                className="px-3 py-2 rounded-md border bg-transparent focus:outline-none focus:ring-2"
+                style={{ borderColor: "var(--border)" }}
               />
             </label>
 
-            {/* honeypot (oculto para usuarios reales) */}
-            <label style={{ position: "absolute", left: "-9999px", top: "auto", width: "1px", height: "1px", overflow: "hidden" }}>
+            {/* honeypot oculto */}
+            <label
+              style={{
+                position: "absolute",
+                left: "-9999px",
+                top: "auto",
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+              }}
+            >
               Si ves este campo, no envíes.
-              <input value={website} onChange={(e) => setWebsite(e.target.value)} name="website" tabIndex={-1} autoComplete="nope" />
+              <input
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                name="website"
+                tabIndex={-1}
+                autoComplete="nope"
+              />
             </label>
 
             <label className="flex flex-col mt-3">
@@ -376,13 +428,17 @@ export default function Contact() {
                 rows={6}
                 aria-invalid={!!errors.message}
                 aria-describedby={errors.message ? "error-message" : undefined}
-                placeholder="Contame sobre tu proyecto, la duda o la propuesta..."
-                className={`px-3 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-transparent resize-none ${
-                  errors.message ? "border-rose-500" : "border-gray-200 dark:border-gray-700"
-                }`}
+                placeholder="Contame sobre tu proyecto, la duda o la propuesta…"
+                className="px-3 py-2 rounded-md border bg-transparent resize-none focus:outline-none focus:ring-2"
+                style={{
+                  borderColor: errors.message
+                    ? "color-mix(in oklab, var(--destructive) 50%, var(--border))"
+                    : "var(--border)",
+                }}
               />
               {errors.message && (
-                <span id="error-message" className="text-rose-600 text-sm mt-1">
+                <span id="error-message" className="text-sm mt-1"
+                  style={{ color: "color-mix(in oklab, var(--destructive) 70%, var(--foreground))" }}>
                   {errors.message}
                 </span>
               )}
@@ -392,12 +448,17 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={sending}
-                className="inline-flex items-center gap-3 px-5 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-3 px-5 py-2 rounded-md font-medium disabled:opacity-60 disabled:cursor-not-allowed"
                 aria-disabled={sending}
+                style={{
+                  background: "var(--primary)",
+                  color: "var(--primary-foreground)",
+                  boxShadow: "0 10px 25px 0 color-mix(in oklab, var(--primary) 20%, transparent)",
+                }}
               >
                 {sending ? (
                   <svg
-                    className="animate-spin -ml-1 h-5 w-5 text-white"
+                    className="animate-spin -ml-1 h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -412,52 +473,68 @@ export default function Contact() {
 
               <button
                 type="button"
-                onClick={() => {
-                  // quick fallback to mail client
-                  window.location.href = buildMailto();
-                }}
+                onClick={() => (window.location.href = buildMailto())}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md border bg-transparent text-sm"
+                style={{ borderColor: "var(--border)" }}
               >
                 Abrir cliente
               </button>
 
-              <div className="ml-auto text-xs text-muted-foreground">Protegido por honeypot • Sin spam</div>
+              <div className="ml-auto text-xs text-foreground/60">
+                Protegido por honeypot • Sin spam
+              </div>
             </div>
           </motion.form>
 
           {/* CONTACT CARDS / LINKS */}
           <motion.aside
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            whileInView={reduce ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.08 }}
             viewport={{ once: true }}
             className="space-y-4"
             aria-label="Enlaces de contacto"
           >
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700">
+            <div
+              className="p-4 rounded-xl border shadow-sm bg-card/90 backdrop-blur"
+              style={{ borderColor: "var(--border)" }}
+            >
               <h3 className="text-sm font-semibold mb-2">Contacto directo</h3>
-              <p className="text-sm text-muted-foreground mb-3">También podés contactarme directamente por estos canales:</p>
+              <p className="text-sm text-foreground/70 mb-3">
+                También podés contactarme directamente por estos canales:
+              </p>
 
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <FaEnvelope className="text-cyan-600" />
+                    <span
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-md border"
+                      style={{
+                        borderColor: "color-mix(in oklab, var(--primary) 35%, var(--border))",
+                        color: "color-mix(in oklab, var(--primary) 75%, var(--foreground))",
+                        background: "color-mix(in oklab, var(--primary) 10%, var(--background))",
+                      }}
+                    >
+                      <FaEnvelope />
+                    </span>
                     <div className="text-sm">
                       <div className="font-medium">{CONTACT_EMAIL}</div>
-                      <div className="text-xs text-muted-foreground">Respuesta en ~4h</div>
+                      <div className="text-xs text-foreground/60">Respuesta en ~4h</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleCopyEmail}
-                      className="px-2 py-1 rounded-md border text-sm"
+                      className="px-2 py-1 rounded-md border text-sm bg-transparent"
+                      style={{ borderColor: "var(--border)" }}
                       aria-label="Copiar email"
                     >
                       {copied ? "Copiado" : "Copiar"}
                     </button>
                     <a
                       href={`mailto:${CONTACT_EMAIL}`}
-                      className="px-2 py-1 rounded-md border text-sm"
+                      className="px-2 py-1 rounded-md border text-sm bg-transparent"
+                      style={{ borderColor: "var(--border)" }}
                       aria-label="Enviar email"
                     >
                       Abrir
@@ -474,7 +551,12 @@ export default function Contact() {
                         href={c.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-2 rounded-md border hover:bg-gray-50 dark:hover:bg-gray-700"
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-md border transition-colors"
+                        style={{
+                          borderColor: "var(--border)",
+                          background:
+                            "color-mix(in oklab, var(--foreground) 4%, var(--background))",
+                        }}
                         aria-label={`Abrir ${c.name}`}
                       >
                         <span className="text-lg">{c.icon}</span>
@@ -485,19 +567,32 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700">
+            <div
+              className="p-4 rounded-xl border shadow-sm bg-card/90 backdrop-blur"
+              style={{ borderColor: "var(--border)" }}
+            >
               <h4 className="text-sm font-semibold mb-2">Detalles útiles</h4>
-              <ul className="text-sm space-y-2 text-muted-foreground">
+              <ul className="text-sm space-y-2 text-foreground/70">
                 <li>Zona horaria: Argentina (GMT-3)</li>
-                <li>Disponibilidad: Freelance / remoto / hibrido</li>
+                <li>Disponibilidad: Freelance / remoto / híbrido</li>
                 <li>Idiomas: Español (nativo), Inglés (avanzado)</li>
               </ul>
             </div>
 
-            <div className="bg-gradient-to-r from-cyan-600 to-cyan-400 text-white p-4 rounded-xl shadow-lg">
-              <h4 className="text-sm font-semibold mb-1">¿Buscas QA, Automation o Dev?</h4>
-              <p className="text-sm mb-3">Puedo ayudarte con el testing de tu app/web con pipelines CI, E2E, API o desarrollando. No dudes en contactarme!</p>
-
+            <div
+              className="p-4 rounded-xl shadow-lg"
+              style={{
+                background:
+                  "linear-gradient(90deg, color-mix(in oklab, var(--primary) 85%, transparent), color-mix(in oklab, var(--primary) 60%, transparent))",
+                color: "var(--primary-foreground)",
+              }}
+            >
+              <h4 className="text-sm font-semibold mb-1">
+                ¿Buscás QA, Automation o Dev?
+              </h4>
+              <p className="text-sm mb-3">
+                Puedo ayudarte con el testing de tu app/web (CI, E2E, API) o desarrollando. ¡Escribime!
+              </p>
             </div>
           </motion.aside>
         </div>

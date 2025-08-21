@@ -8,6 +8,10 @@ export default function Footer() {
     location: "Argentina 🇦🇷",
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer
       role="contentinfo"
@@ -16,7 +20,8 @@ export default function Footer() {
       {/* Glow border */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 animate-pulse" />
 
-      <div className="wrapper grid grid-cols-1 md:grid-cols-3 gap-10">
+      {/* Wrapper centrado */}
+      <div className="max-w-6xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Col 1 - Frase y ubicación */}
         <div>
           <p className="text-sm">{footerInfo.extra}</p>
@@ -29,17 +34,26 @@ export default function Footer() {
         <nav aria-label="Enlaces de pie" className="text-sm">
           <ul className="flex flex-wrap items-center gap-6">
             <li>
-              <a href="#projects" className="hover:text-blue-500 dark:hover:text-blue-400 transition">
+              <a
+                href="#projects"
+                className="hover:text-blue-500 dark:hover:text-blue-400 transition"
+              >
                 🚀 Proyectos
               </a>
             </li>
             <li>
-              <a href="#about" className="hover:text-blue-500 dark:hover:text-blue-400 transition">
+              <a
+                href="#about"
+                className="hover:text-blue-500 dark:hover:text-blue-400 transition"
+              >
                 🙋 Sobre mí
               </a>
             </li>
             <li>
-              <a href="#contact" className="hover:text-blue-500 dark:hover:text-blue-400 transition">
+              <a
+                href="#contact"
+                className="hover:text-blue-500 dark:hover:text-blue-400 transition"
+              >
                 ✉️ Contacto
               </a>
             </li>
