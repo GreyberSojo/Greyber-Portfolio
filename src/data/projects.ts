@@ -28,13 +28,16 @@ export type Project = {
 export const PROJECTS: ReadonlyArray<Project> = [
   {
     slug: "dungeon-crawler",
-    title: "Dungeon Crawler",
-    summary:
-      "Prototipo 2D con loot, salas procedurales y combate básico en tiempo real.",
+    title: "project.dungeon-crawler.title",
+    summary: "project.dungeon-crawler.summary",
     type: "game",
     year: 2025,
     tech: ["Godot", "GDScript", "Tilemaps"],
-    tags: ["Procedural", "2D", "Pixel"],
+    tags: [
+      "project.dungeon-crawler.tags.procedural",
+      "project.dungeon-crawler.tags.2d",
+      "project.dungeon-crawler.tags.pixel",
+    ],
     cover: { type: "video", src: "/games/dungeon-preview.mp4", poster: "/games/game1.jpg" },
     demo: "/games/dungeon",
     repo: "https://github.com/greyber/dungeon-crawler",
@@ -45,13 +48,16 @@ export const PROJECTS: ReadonlyArray<Project> = [
   },
   {
     slug: "pixel-shooter",
-    title: "Pixel Shooter",
-    summary:
-      "Shooter arcade con oleadas, power-ups y sistema simple de partículas.",
+    title: "project.pixel-shooter.title",
+    summary: "project.pixel-shooter.summary",
     type: "game",
     year: 2025,
     tech: ["Unity", "C#"],
-    tags: ["Shooter", "Arcade", "FX"],
+    tags: [
+      "project.pixel-shooter.tags.shooter",
+      "project.pixel-shooter.tags.arcade",
+      "project.pixel-shooter.tags.fx",
+    ],
     cover: { type: "video", src: "/games/shooter-preview.mp4", poster: "/games/game2.jpg" },
     demo: "/games/shooter",
     repo: "https://github.com/greyber/pixel-shooter",
@@ -62,13 +68,16 @@ export const PROJECTS: ReadonlyArray<Project> = [
   },
   {
     slug: "truco-argentino",
-    title: "Truco Argentino (Godot)",
-    summary:
-      "Implementación de reglas de Truco: envido, flor (opcional), truco/retruco/vale cuatro. UI simple y lógica preparada para IA y online.",
+    title: "project.truco-argentino.title",
+    summary: "project.truco-argentino.summary",
     type: "game",
     year: 2025,
     tech: ["Godot", "GDScript", "State Machines"],
-    tags: ["Cartas", "IA (roadmap)", "Online (roadmap)"],
+    tags: [
+      "project.truco-argentino.tags.cartas",
+      "project.truco-argentino.tags.ia-roadmap",
+      "project.truco-argentino.tags.online-roadmap",
+    ],
     cover: { type: "video", src: "/games/truco-preview.mp4", poster: "/games/game3.jpg" },
     demo: "/games/truco",
     repo: "https://github.com/greyber/truco-godot",
@@ -79,13 +88,16 @@ export const PROJECTS: ReadonlyArray<Project> = [
   },
   {
     slug: "portfolio-website",
-    title: "Este sitio (Portfolio)",
-    summary:
-      "Portafolio con Next.js, Tailwind, Framer Motion y shadcn/ui. Dark/Light mode, secciones animadas, SEO y componentes reusables.",
+    title: "project.portfolio-website.title",
+    summary: "project.portfolio-website.summary",
     type: "web",
     year: 2025,
     tech: ["Next.js", "Tailwind", "Framer Motion", "shadcn/ui"],
-    tags: ["SEO", "Accesibilidad", "Animaciones"],
+    tags: [
+      "project.portfolio-website.tags.seo",
+      "project.portfolio-website.tags.accesibilidad",
+      "project.portfolio-website.tags.animaciones",
+    ],
     cover: { type: "image", src: "/covers/portfolio-cover.webp" },
     demo: "/",
     repo: "https://github.com/greyber/portfolio",
@@ -96,13 +108,16 @@ export const PROJECTS: ReadonlyArray<Project> = [
   },
   {
     slug: "qa-automation-playwright",
-    title: "QA Automation (Playwright)",
-    summary:
-      "Suite de pruebas UI y API con Playwright, fixtures, screenshots y reportes HTML.",
+    title: "project.qa-automation-playwright.title",
+    summary: "project.qa-automation-playwright.summary",
     type: "qa",
     year: 2025,
     tech: ["Playwright", "TypeScript", "CI"],
-    tags: ["Testing", "API", "UI"],
+    tags: [
+      "project.qa-automation-playwright.tags.testing",
+      "project.qa-automation-playwright.tags.api",
+      "project.qa-automation-playwright.tags.ui",
+    ],
     cover: { type: "image", src: "/covers/playwright-cover.webp" },
     demo: "https://stackblitz.com/edit/playwright-demo",
     repo: "https://github.com/greyber/playwright-suite",

@@ -1,0 +1,49 @@
+{
+  "project": {
+    "dungeon-crawler": {
+      "title": "Dungeon Crawler",
+      "summary": "Prototipo 2D con loot, salas procedurales y combate básico en tiempo real.",
+      "tags": {
+        "procedural": "Procedural",
+        "2d": "2D",
+        "pixel": "Pixel"
+      }
+    },
+    "pixel-shooter": {
+      "title": "Pixel Shooter",
+      "summary": "Shooter arcade con oleadas, power-ups y sistema simple de partículas.",
+      "tags": {
+        "shooter": "Shooter",
+        "arcade": "Arcade",
+        "fx": "FX"
+      }
+    },
+    "truco-argentino": {
+      "title": "Truco Argentino (Godot)",
+      "summary": "Implementación de reglas de Truco: envido, flor (opcional), truco/retruco/vale cuatro. UI simple y lógica preparada para IA y online.",
+      "tags": {
+        "cartas": "Cartas",
+        "ia-roadmap": "IA (roadmap)",
+        "online-roadmap": "Online (roadmap)"
+      }
+    },
+    "portfolio-website": {
+      "title": "Este sitio (Portfolio)",
+      "summary": "Portafolio con Next.js, Tailwind, Framer Motion y shadcn/ui. Dark/Light mode, secciones animadas, SEO y componentes reusables.",
+      "tags": {
+        "seo": "SEO",
+        "accesibilidad": "Accesibilidad",
+        "animaciones": "Animaciones"
+      }
+    },
+    "qa-automation-playwright": {
+      "title": "QA Automation (Playwright)",
+      "summary": "Suite de pruebas UI y API con Playwright, fixtures, screenshots y reportes HTML.",
+      "tags": {
+        "testing": "Testing",
+        "api": "API",
+        "ui": "UI"
+      }
+    }
+  }
+}
