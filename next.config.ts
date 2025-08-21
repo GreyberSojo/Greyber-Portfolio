@@ -10,6 +10,10 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  i18n: {
+    locales: ["en", "es"],
+    defaultLocale: "es",
+  },
   pageExtensions: ["ts", "tsx", "mdx"],
   // Opcionales útiles:
   // images: { domains: ["..."] },
