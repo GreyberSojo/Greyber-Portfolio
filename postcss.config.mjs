@@ -1,9 +1,7 @@
-import tailwind from '@tailwindcss/postcss';
-import autoprefixer from 'autoprefixer';
-
+// postcss.config.mjs
 export default {
-  plugins: [
-    tailwind(),      // IMPORTANT: function form, not string key
-    autoprefixer(),
-  ],
-};
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+}
