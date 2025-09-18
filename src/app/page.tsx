@@ -1,9 +1,11 @@
 // src/app/page.tsx
-import Hero from "@/components/Hero";
+import { Suspense } from "react";
+
 import About from "@/components/About";
 import Contact from "@/components/Contact";
-import ProjectsQA from "@/components/ProjectsQA";
+import Hero from "@/components/Hero";
 import ProjectsGames from "@/components/ProjectsGames";
+import ProjectsQA from "@/components/ProjectsQA";
 
 export default function Home() {
   return (
@@ -16,7 +18,15 @@ export default function Home() {
       <section id="skills" aria-label="Skills" className="content-flow">
         <h2 className="sr-only">Showcase</h2>
         <ProjectsQA />
-        <ProjectsGames />
+        <Suspense
+          fallback={
+            <div className="text-center text-sm text-foreground/60 py-8">
+              Cargando proyectos…
+            </div>
+          }
+        >
+          <ProjectsGames />
+        </Suspense>
       </section>
 
       <section id="about" aria-label="Sobre mí" className="content-flow">

@@ -1,16 +1,17 @@
 // src/components/ProjectsGames.tsx (improved)
 "use client";
 
-import { useMemo, useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
+import { Github,X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
-import { PROJECTS, type Project, type Media } from "@/data/projects";
-import { X, ExternalLink, Github, PlayCircle, Info } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef,useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
+import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
+import { Button } from "@/components/ui/button";
+import { type Media,type Project, PROJECTS } from "@/data/projects";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
@@ -32,8 +33,7 @@ const SORTS: { label: string; value: SortValue }[] = [
   { label: "A–Z", value: "az" },
 ];
 
-const BLUR_DATA_URL =
-  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNTAwJyBoZWlnaHQ9JzI4MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjMjIyJy8+PC9zdmc+";
+// (blur placeholder constant removed as unused)
 
 // ---- Utils ----
 const track = (event: string, data?: Record<string, unknown>) =>
@@ -198,9 +198,11 @@ function QuickViewModal({ project, onClose }: { project: Project | null; onClose
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey as any);
-    return () => window.removeEventListener("keydown", onKey as any);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
   useEffect(() => {
@@ -330,7 +332,6 @@ function SimpleGrid({ items, onOpen }: { items: Project[]; onOpen: (p: Project) 
 
 // ---- Grilla avanzada ----
 function AdvancedGrid({
-  items,
   filtered,
   search,
   setSearch,
@@ -343,7 +344,6 @@ function AdvancedGrid({
   setSort,
   onOpen,
 }: {
-  items: Project[];
   filtered: Project[];
   search: string;
   setSearch: (v: string) => void;
@@ -499,7 +499,6 @@ export default function ProjectsGames() {
 
       {mode === "advanced" ? (
         <AdvancedGrid
-          items={[...PROJECTS]}
           filtered={filtered}
           search={search}
           setSearch={setSearch}

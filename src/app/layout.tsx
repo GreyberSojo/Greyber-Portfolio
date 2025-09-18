@@ -1,8 +1,10 @@
-import { Providers } from "./providers";
 import "@/styles/globals.css";
-import Navbar from "@/components/Navbar";
+
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+
+import { Providers } from "./providers";
 
 export const metadata = {
   title: "Greyber Sojo - Portfolio",

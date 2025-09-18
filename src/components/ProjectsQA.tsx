@@ -1,14 +1,5 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  MouseEvent,
-  KeyboardEvent,
-} from "react";
 import {
   motion,
   MotionValue,
@@ -16,22 +7,32 @@ import {
   useInView,
   useMotionValue,
 } from "framer-motion";
+import React, {
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
-  FaRobot,
-  FaCode,
-  FaClipboardList,
-  FaExternalLinkAlt,
-  FaChevronLeft,
-  FaChevronRight,
   FaBug,
   FaCheckCircle,
-  FaStopwatch,
+  FaChevronLeft,
+  FaChevronRight,
+  FaClipboardList,
+  FaCode,
+  FaExternalLinkAlt,
   FaLayerGroup,
+  FaRobot,
+  FaStopwatch,
 } from "react-icons/fa";
-import { SiPostman, SiTypescript, SiJavascript } from "react-icons/si";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SiJavascript,SiPostman, SiTypescript } from "react-icons/si";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -39,14 +40,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Skeleton } from "@/components/ui/skeleton";
 
 // ------------------------------
 // HOOKS

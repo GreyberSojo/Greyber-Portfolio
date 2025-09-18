@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { FaGlobe } from "react-icons/fa";
-import DarkModeToggle from "./DarkModeToggle";
+import Link from "next/link";
+import { useCallback,useEffect, useMemo, useState } from "react";
+
 import { cn } from "@/lib/utils";
+
+import DarkModeToggle from "./DarkModeToggle";
 
 type NavItem = { href: `#${string}`; label: string };
 

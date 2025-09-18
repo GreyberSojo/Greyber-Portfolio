@@ -1,4 +1,4 @@
-import { FaGithub, FaLinkedin, FaEnvelope, FaArrowUp } from "react-icons/fa";
+import { FaEnvelope,FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   const footerInfo = {
@@ -8,9 +8,7 @@ export default function Footer() {
     location: "Argentina 🇦🇷",
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  // (removed unused scrollToTop)
 
   return (
     <footer

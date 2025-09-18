@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Lottie from "lottie-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { FaArrowRight, FaCheckCircle,FaDownload } from "react-icons/fa";
+
 import { Button } from "@/components/ui/button";
-import { FaArrowRight, FaDownload, FaCheckCircle } from "react-icons/fa";
 import { fadeUp } from "@/lib/animations";
+
 import animationData from "../../public/lotties/qa-automation.json";
 
 export default function Hero() {

@@ -1,12 +1,13 @@
 // src/components/ProjectCard.tsx
 "use client";
 
+import { cva, type VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, KeyboardEvent } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Card, CardContent } from "@/components/ui/card";
+import { KeyboardEvent,useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export type ProjectCardCover =

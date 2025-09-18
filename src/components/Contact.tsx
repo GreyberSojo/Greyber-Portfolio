@@ -1,14 +1,14 @@
 // src/components/Contact.tsx
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  FaClipboard,
   FaEnvelope,
-  FaLinkedin,
   FaGithub,
   FaItchIo,
-  FaClipboard,
+  FaLinkedin,
 } from "react-icons/fa";
 
 /* ==== Config ==== */

@@ -1,10 +1,12 @@
 // src/components/ProjectDetailHeader.tsx
-import { Project } from "@/data/projects";
 import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
+import { Project } from "@/data/projects";
 
 export default function ProjectDetailHeader({ project }: { project: Project }) {
-  const isVideo = project.cover.type === "video";
+  const cover = Array.isArray(project.cover) ? project.cover[0] : project.cover;
+  const isVideo = cover.type === "video";
 
   return (
     <header className="flex flex-col md:flex-row gap-6 items-center">
@@ -12,8 +14,8 @@ export default function ProjectDetailHeader({ project }: { project: Project }) {
         {isVideo ? (
           <video
             className="absolute inset-0 w-full h-full object-cover rounded-xl border shadow-lg"
-            src={project.cover.src}
-            poster={project.cover.src}
+            src={cover.src}
+            poster={cover.poster ?? cover.src}
             muted
             loop
             playsInline
@@ -22,7 +24,7 @@ export default function ProjectDetailHeader({ project }: { project: Project }) {
           />
         ) : (
           <Image
-            src={project.cover.src}
+            src={cover.src}
             alt={project.title}
             fill
             className="rounded-xl border shadow-lg object-cover"
@@ -48,13 +50,6 @@ export default function ProjectDetailHeader({ project }: { project: Project }) {
         </div>
 
         <div className="flex gap-3 mt-6">
-          {project.demo && (
-            <Button asChild className="bg-purple-700 hover:bg-purple-800 text-white">
-              <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                Ver Demo
-              </a>
-            </Button>
-          )}
           {project.repo && (
             <Button asChild variant="outline">
               <a href={project.repo} target="_blank" rel="noopener noreferrer">

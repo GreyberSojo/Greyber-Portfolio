@@ -1,23 +1,24 @@
 // src/components/About.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import type { IconType } from "react-icons";
 import {
-  FaCogs,
-  FaPlay,
-  FaCode,
-  FaGamepad,
-  FaRobot,
-  FaClipboardCheck,
-  FaBug,
   FaBriefcase,
-  FaGraduationCap,
+  FaBug,
+  FaClipboardCheck,
   FaClipboardList,
+  FaCode,
+  FaCogs,
   FaDatabase,
+  FaGamepad,
+  FaGraduationCap,
   FaLayerGroup,
+  FaPlay,
+  FaRobot,
 } from "react-icons/fa";
+
 import { fadeUp } from "@/lib/animations";
 
 /* --------- Reduced motion --------- */
