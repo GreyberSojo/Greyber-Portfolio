@@ -13,8 +13,8 @@ export default function Home() {
         <Hero />
       </section>
 
-      <section id="projects" aria-label="Proyectos" className="content-flow">
-        <h2 className="sr-only">Proyectos</h2>
+      <section id="skills" aria-label="Skills" className="content-flow">
+        <h2 className="sr-only">Showcase</h2>
         <ProjectsQA />
         <ProjectsGames />
       </section>

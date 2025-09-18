@@ -2,11 +2,13 @@
 // Tipos + datos en un solo lugar para mantenerlo simple.
 
 export type ProjectType = "game" | "web" | "tool" | "qa";
-export type ProjectStatus = "WIP" | "Done" | "Prototype";
+export type ProjectStatus = "Work In Progress" | "Done" | "Prototype";
 
-export type Cover =
-  | { type: "image"; src: string }
-  | { type: "video"; src: string; poster?: string };
+export type Media = {
+  src: string;
+  type: "image" | "video";
+  poster?: string;
+};
 
 export type Project = {
   slug: string;
@@ -16,100 +18,74 @@ export type Project = {
   year: number;
   tech: string[];
   tags: string[];
-  cover: Cover;
+  cover: Media | Media[];
   repo?: string;
-  demo?: string;
-  caseStudy?: string;
   status?: ProjectStatus;
   featured?: boolean;
-  metrics?: { stars?: number; lastUpdated?: string; language?: string };
+  metrics?: { lastUpdated?: string; language?: string };
 };
 
 export const PROJECTS: ReadonlyArray<Project> = [
   {
     slug: "dungeon-crawler",
-    title: "Dungeon Crawler",
+    title: "Dungeon Supply Master",
     summary:
       "Prototipo 2D con loot, salas procedurales y combate básico en tiempo real.",
     type: "game",
     year: 2025,
-    tech: ["Godot", "GDScript", "Tilemaps"],
+    tech: ["Godot", "GDScript", "Logic"],
     tags: ["Procedural", "2D", "Pixel"],
-    cover: { type: "video", src: "/games/dungeon-preview.mp4", poster: "/games/game1.jpg" },
-    demo: "/games/dungeon",
-    repo: "https://github.com/greyber/dungeon-crawler",
-    caseStudy: "/projects/dungeon-crawler",
+    cover: [
+      { src: "/dsm/game_battle.png", type: "image", poster: "/dsm/game_battle.png" },
+      { src: "/dsm/game_boss.png", type: "image" },
+      { src: "/dsm/game_engine.png", type: "image" },
+      { src: "/dsm/game_loot.png", type: "image" },
+    ],
+    repo: "https://github.com/GreyberSojo/DungeonSupplyMaster",
     status: "Prototype",
     featured: false,
-    metrics: { stars: 12, lastUpdated: "2025-07-20", language: "GDScript" },
-  },
-  {
-    slug: "pixel-shooter",
-    title: "Pixel Shooter",
-    summary:
-      "Shooter arcade con oleadas, power-ups y sistema simple de partículas.",
-    type: "game",
-    year: 2025,
-    tech: ["Unity", "C#"],
-    tags: ["Shooter", "Arcade", "FX"],
-    cover: { type: "video", src: "/games/shooter-preview.mp4", poster: "/games/game2.jpg" },
-    demo: "/games/shooter",
-    repo: "https://github.com/greyber/pixel-shooter",
-    caseStudy: "/projects/pixel-shooter",
-    status: "Prototype",
-    featured: false,
-    metrics: { stars: 9, lastUpdated: "2025-07-05", language: "C#" },
+    metrics: { lastUpdated: "2025-07-20", language: "GDScript" },
   },
   {
     slug: "truco-argentino",
-    title: "Truco Argentino (Godot)",
+    title: "Truco Argentino",
     summary:
-      "Implementación de reglas de Truco: envido, flor (opcional), truco/retruco/vale cuatro. UI simple y lógica preparada para IA y online.",
+      "Clasico juego de cartas Truco, donde se implementaron las reglas del modo de juego truco argentino: Envido, truco/retruco/vale cuatro. UI simple, reparto de cartas automaticas, sistema de fases + rondas.",
     type: "game",
-    year: 2025,
-    tech: ["Godot", "GDScript", "State Machines"],
-    tags: ["Cartas", "IA (roadmap)", "Online (roadmap)"],
-    cover: { type: "video", src: "/games/truco-preview.mp4", poster: "/games/game3.jpg" },
-    demo: "/games/truco",
-    repo: "https://github.com/greyber/truco-godot",
-    caseStudy: "/projects/truco-argentino",
-    status: "WIP",
+    year: 2024,
+    tech: ["Unity", "C#", "State Machines", "UI", "UX", "AI", "PixelArt", "3D", "2.5D"],
+    tags: ["Cartas", "2.5D", "IA (roadmap)", "Online (roadmap)", "Pixel", "Truco", "Argentine"],
+    cover: [
+      { src: "/truco/truco-preview-unity.mp4", type: "video", poster: "/truco/truco.png" },
+      { src: "/truco/truco.png", type: "image" },
+      { src: "/truco/code-preview.png", type: "image" },
+      { src: "/truco/unity-truco.png", type: "image" },
+    ],
+    repo: "https://github.com/GreyberSojo/",
+    status: "Work In Progress",
     featured: true,
-    metrics: { stars: 21, lastUpdated: "2025-08-10", language: "GDScript" },
+    metrics: { lastUpdated: "2024-08-10", language: "C#" },
   },
   {
     slug: "portfolio-website",
-    title: "Este sitio (Portfolio)",
+    title: "Portfolio WEB",
     summary:
-      "Portafolio con Next.js, Tailwind, Framer Motion y shadcn/ui. Dark/Light mode, secciones animadas, SEO y componentes reusables.",
+      "Portafolio web con Next.js, Tailwind, Framer Motion y shadcn/ui. Dark/Light mode, secciones animadas, SEO y componentes reusables.",
     type: "web",
     year: 2025,
-    tech: ["Next.js", "Tailwind", "Framer Motion", "shadcn/ui"],
-    tags: ["SEO", "Accesibilidad", "Animaciones"],
-    cover: { type: "image", src: "/covers/portfolio-cover.webp" },
-    demo: "/",
-    repo: "https://github.com/greyber/portfolio",
-    caseStudy: "/projects/portfolio-website",
+    tech: ["Next.js", "Tailwind", "Framer Motion", "shadcn/ui", "Windsurf", "TypeScript", "Framer Motion", "Windsurf"],
+    tags: ["SEO", "Accesibilidad", "Animaciones", "Dark/Light mode", "Componentes reusables", "Secciones animadas"],
+    cover: [      
+      { src: "/portfolio/video-preview.mp4", type: "video", poster: "/portfolio/home.png" },
+      { src: "/portfolio/home.png", type: "image" },
+      { src: "/portfolio/contact.png", type: "image" },
+      { src: "/portfolio/showcase.png", type: "image" },
+      { src: "/portfolio/windsurf.png", type: "image" },
+    ],
+    repo: "https://github.com/GreyberSojo/greyber-portfolio",
     status: "Done",
     featured: true,
-    metrics: { stars: 5, lastUpdated: "2025-08-15", language: "TypeScript" },
-  },
-  {
-    slug: "qa-automation-playwright",
-    title: "QA Automation (Playwright)",
-    summary:
-      "Suite de pruebas UI y API con Playwright, fixtures, screenshots y reportes HTML.",
-    type: "qa",
-    year: 2025,
-    tech: ["Playwright", "TypeScript", "CI"],
-    tags: ["Testing", "API", "UI"],
-    cover: { type: "image", src: "/covers/playwright-cover.webp" },
-    demo: "https://stackblitz.com/edit/playwright-demo",
-    repo: "https://github.com/greyber/playwright-suite",
-    caseStudy: "/projects/qa-automation-playwright",
-    status: "Done",
-    featured: false,
-    metrics: { stars: 18, lastUpdated: "2025-07-30", language: "TypeScript" },
+    metrics: { lastUpdated: "2025-08-15", language: "TypeScript" },
   },
 ];
 

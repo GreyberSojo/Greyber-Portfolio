@@ -95,96 +95,250 @@ type Project = {
 // DATA (mock)
 // ------------------------------
 export const projects: Project[] = [
+  // 1) SAP Finance – UAT / R2R (Manual)
   {
-    title: "Login Exitoso - Playwright",
+    title: "SAP Finance R2R – UAT de Cierre Contable",
     description:
-      "Automatización que valida un login exitoso usando credenciales válidas en Playwright con TypeScript.",
+      "Validación de transacciones y reportes en R2R (FB50, FBL3N). Diseño y ejecución de casos en Xray/JIRA con evidencia.",
+    icon: <FaClipboardList className="text-primary text-2xl" />,
+    details: [
+      "📊 Plan de pruebas y dashboard en Xray",
+      "📎 Evidencia de comprobantes y saldos",
+      "🧭 Rastreabilidad: Requisito ⇄ Caso ⇄ Defecto",
+    ],
+    expected:
+      "Asientos correctos, saldos conciliados, y reportes contables consistentes en período de cierre.",
+    steps: [
+      "Given ambiente SAP GUI con credenciales válidas",
+      "When registro asiento contable FB50 y consulto FBL3N",
+      "Then los saldos y documentos reflejan el asiento en el período correcto",
+    ],
+    tech: ["UAT", "SAP Finance (R2R)", "Manual Testing", "JIRA / Xray"],
+    type: "Manual",
+    accent: "#0ea5e9",
+    metrics: { durationSec: 420, status: "passed", level: "Regression" },
+  },
+
+  // 2) SAP Finance – Tosca (Automation)
+  {
+    title: "SAP Finance – Smoke Automatizado con Tosca",
+    description:
+      "Automatización básica de login y validación de documento contable en SAP GUI con Tosca.",
     icon: <FaRobot className="text-primary text-2xl" />,
     details: [
-      "📄 Escenario en Gherkin",
-      "🤖 Código real TypeScript",
-      "✅ Valida encabezado 'Bienvenido'",
+      "🤖 Tosca: módulos reutilizables",
+      "🧱 Data-driven (plantilla con credenciales y docs)",
+      "⏱️ Reduce tiempos manuales en smoke diario",
     ],
-    expected: "Usuario autenticado y encabezado 'Bienvenido' visible.",
-    code: `import { test, expect } from '@playwright/test';
+    expected: "Autenticación OK y documento visible en consulta estándar.",
+    code: `# Pseudopasos Tosca (TestCase)
+# 1) Start SAP Logon -> Select system
+# 2) Login (User/Pass) -> Verify SAP Easy Access
+# 3) Navegar transacción FB03 -> Ingresar Doc -> Verificar encabezado
+# 4) Logout`,
+    tech: ["Tosca", "Automation", "SAP GUI"],
+    type: "Automation",
+    accent: "#06b6d4",
+    metrics: { durationSec: 90, status: "passed", level: "Smoke" },
+  },
 
-test('Login exitoso con credenciales válidas', async ({ page }) => {
-  await page.goto('https://example.com/login');
-  await page.fill('input[name="email"]', 'user@test.com');
-  await page.fill('input[name="password"]', 'Password123');
-  await page.click('button[type="submit"]');
-  await expect(page.locator('h1')).toHaveText('Bienvenido');
+  // 3) SAP Finance – Xray Dashboard (Manual)
+  {
+    title: "Xray Dashboard – Métricas de Calidad",
+    description:
+      "Tableros con cobertura, avance por ciclo y defectos por severidad para stakeholders.",
+    icon: <FaClipboardList className="text-primary text-2xl" />,
+    details: [
+      "📈 Cobertura por requerimiento",
+      "🧩 Trazabilidad: Requisito ⇄ Test ⇄ Execution",
+      "🎯 Enfoque en cierre contable",
+    ],
+    expected: "Visibilidad clara del estado de calidad y riesgos.",
+    steps: [
+      "Configurar filtros por versión/ciclo",
+      "Exponer KPIs: passed/failed/blockers",
+      "Compartir con negocio y líderes",
+    ],
+    tech: ["JIRA / Xray", "Reporting", "QA Management"],
+    type: "Manual",
+    accent: "#10b981",
+    metrics: { durationSec: 60, status: "passed", level: "Regression" },
+  },
+
+  // 4) OTT/STB – Netflix Playback (Manual E2E)
+  {
+    title: "OTT/STB – Netflix Playback E2E",
+    description:
+      "Prueba E2E de reproducción, controles y subtítulos en STB. Evidencia + logs.",
+    icon: <FaCheckCircle className="text-primary text-2xl" />,
+    details: [
+      "🎬 Escenarios de reproducción (HD/SD)",
+      "📝 Evidencia con timestamps",
+      "🪵 Recolección de logs (PowerShell / Android Dev Options)",
+    ],
+    expected:
+      "Video fluido, controles operativos y subtítulos correctos en idioma configurado.",
+    steps: [
+      "Given STB con app Netflix instalada/actualizada",
+      "When reproduzco un título y alterno subtítulos",
+      "Then el playback no presenta stutter y los subtítulos son correctos",
+    ],
+    tech: ["Manual Testing", "OTT/STB", "Logs Analysis"],
+    type: "Manual",
+    accent: "#ef4444",
+    metrics: { durationSec: 180, status: "passed", level: "E2E" },
+  },
+
+  // 5) OTT/STB – YouTube Sign-In API (Postman)
+//   {
+//     title: "YouTube – Validación Sign-In vía API",
+//     description:
+//       "Colección Postman para login y validación de perfil activo antes de pruebas E2E.",
+//     icon: <SiPostman className="text-primary text-2xl" />,
+//     details: [
+//       "🧪 Pre-condición para escenarios E2E",
+//       "🔐 Manejo de token",
+//       "✅ Asserts en body y status",
+//     ],
+//     expected: "200 OK y perfil del usuario activo con permisos correctos.",
+//     code: `// Postman Tests
+// pm.test("200 OK", () => pm.response.to.have.status(200));
+// pm.test("User active", () => pm.expect(pm.response.json().active).to.be.true);`,
+//     tech: ["Postman", "API Testing", "JavaScript"],
+//     type: "API",
+//     accent: "#a855f7",
+//     metrics: { durationSec: 3, status: "passed", level: "Smoke" },
+//   },
+
+  // 6) Playwright – Login UI (Automation)
+  {
+    title: "Playwright – Login UI Happy Path",
+    description:
+      "Automatización de login exitoso con TypeScript + aserciones de UI.",
+    icon: <FaRobot className="text-primary text-2xl" />,
+    details: [
+      "⚙️ Fixtures aisladas",
+      "🧩 Selectors estables",
+      "📸 Screenshots en fallo",
+    ],
+    expected: "Usuario autenticado y dashboard visible tras el submit.",
+    code: `import { test, expect } from '@playwright/test';
+test('Login OK', async ({ page }) => {
+  await page.goto('https://app.example.com/login');
+  await page.getByLabel('Email').fill('user@test.com');
+  await page.getByLabel('Password').fill('Password123');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 });`,
-    gif: "/playwright-demo.gif",
-    demoUrl: "https://stackblitz.com/edit/playwright-demo",
+    gif: "/playwright-login.gif",
     tech: ["Playwright", "TypeScript", "QA Automation"],
     type: "Automation",
     accent: "#06b6d4",
-    metrics: { durationSec: 6, status: "passed", level: "Smoke" },
+    metrics: { durationSec: 7, status: "passed", level: "Smoke" },
   },
+
+  // 7) Cypress – Validación de Formulario (Automation, en progreso)
   {
-    title: "Login Fallido - Manual",
+    title: "Cypress – Validación de Formulario (WIP)",
     description:
-      "Caso de prueba manual que valida que se muestre el mensaje de error al ingresar credenciales inválidas.",
-    icon: <FaClipboardList className="text-primary text-2xl" />,
-    details: [
-      "📄 TC-002: Usuario inválido",
-      "🔑 Contraseña: `ClaveIncorrecta`",
-      "❌ Mensaje 'Credenciales inválidas'",
-    ],
-    expected:
-      "Mensaje de error 'Credenciales inválidas' mostrado bajo el formulario.",
-    steps: [
-      "Scenario: Login fallido con credenciales inválidas",
-      "Given el usuario está en la página de login",
-      "When ingresa email 'user@test.com' y contraseña 'ClaveIncorrecta'",
-      "And hace clic en 'Login'",
-      "Then debería ver un error 'Credenciales inválidas'",
-    ],
-    tech: ["Manual Testing", "Gherkin", "QA Documentation"],
-    type: "Manual",
-    accent: "#22c55e",
-    metrics: { durationSec: 15, status: "passed", level: "Regression" },
-  },
-  {
-    title: "API Login - Postman",
-    description:
-      "Automatización de login vía API usando Postman; verifica código 200 y el mensaje de bienvenida.",
+      "Suite básica de validación de campos obligatorios y mensajes de error (aprendizaje activo).",
     icon: <FaCode className="text-primary text-2xl" />,
     details: [
-      "📄 Test en colección Postman",
-      "🔑 POST con credenciales válidas",
-      "✅ Verifica 200 + mensaje",
+      "🧪 Required / Patterns",
+      "🔁 Data-driven",
+      "🧹 Hooks before/after",
     ],
-    expected: "Respuesta 200 y body con { message: 'Bienvenido' }.",
-    code: `POST https://example.com/api/login
-Headers:
-  Content-Type: application/json
-Body:
-{
-  "email": "user@test.com",
-  "password": "Password123"
-}
-
-Tests (Postman):
-pm.test("Status code is 200", function () {
-  pm.response.to.have.status(200);
-});
-pm.test("Response has welcome message", function () {
-  pm.expect(pm.response.json().message).to.eql("Bienvenido");
+    expected: "Mensajes de error consistentes por campo según reglas de negocio.",
+    code: `// cypress/e2e/form.cy.js
+describe('Form validation', () => {
+  it('shows errors on required fields', () => {
+    cy.visit('/form');
+    cy.get('button[type=submit]').click();
+    cy.contains('El email es obligatorio').should('be.visible');
+  });
 });`,
-    demoUrl: "https://www.postman.com/",
-    tech: ["Postman", "API Testing", "JavaScript"],
+    tech: ["Cypress", "JavaScript", "Form Testing"],
+    type: "Automation",
+    accent: "#14b8a6",
+    metrics: { durationSec: 5, status: "passed", level: "Regression" },
+  },
+
+  // 8) API – Auth & Roles (Postman)
+  {
+    title: "API – Autenticación y Roles",
+    description:
+      "Colección Postman para login, refresh token y verificación de roles/claims.",
+    icon: <SiPostman className="text-primary text-2xl" />,
+    details: [
+      "🔐 Tokens (access/refresh)",
+      "🧭 Escenarios 200/401/403",
+      "✅ Validaciones en schema y body",
+    ],
+    expected:
+      "200 con token válido; 403 ante rol insuficiente; 401 en token expirado.",
+    code: `pm.test("Token presente", () => {
+  const json = pm.response.json();
+  pm.expect(json).to.have.property("access_token");
+});`,
+    tech: ["Postman", "API Testing", "Security"],
     type: "API",
-    accent: "#a855f7",
-    metrics: { durationSec: 2, status: "passed", level: "Smoke" },
+    accent: "#f97316",
+    metrics: { durationSec: 4, status: "passed", level: "Regression" },
+  },
+
+  // 9) Spira – Control de Métricas QA (Manual)
+  {
+    title: "Spira – Control de Métricas QA",
+    description:
+      "Seguimiento de ejecuciones, defectos y cobertura por release. Export para stakeholders.",
+    icon: <FaClipboardList className="text-primary text-2xl" />,
+    details: [
+      "📊 KPIs por release/sprint",
+      "📁 Trazabilidad artefactos",
+      "📤 Export a PDF/Excel",
+    ],
+    expected: "Visibilidad de avance y calidad por historia/épica.",
+    steps: [
+      "Configurar releases y ciclos",
+      "Asociar casos a requerimientos",
+      "Consolidar defectos y tendencias",
+    ],
+    tech: ["Spira", "Reporting", "QA Management"],
+    type: "Manual",
+    accent: "#22c55e",
+    metrics: { durationSec: 80, status: "passed", level: "Regression" },
+  },
+
+  // 10) Triage de Defectos – Flujo (Manual)
+  {
+    title: "Triage de Defectos – Flujo y Priorización",
+    description:
+      "Proceso para analizar severidad/prioridad, reproducibilidad, impacto y asignación.",
+    icon: <FaBug className="text-primary text-2xl" />,
+    details: [
+      "🚦 Severidad vs Prioridad",
+      "📎 Evidencia y pasos claros",
+      "👥 Alineación con Dev/PO",
+    ],
+    expected:
+      "Defectos bien documentados, reproducibles y priorizados para resolución eficiente.",
+    steps: [
+      "Reproducir y aislar",
+      "Adjuntar logs/capturas",
+      "Asignar y seguir SLA",
+    ],
+    tech: ["JIRA", "Defect Handling", "Agile"],
+    type: "Manual",
+    accent: "#eab308",
+    metrics: { durationSec: 70, status: "passed", level: "Regression" },
   },
 ];
+
 
 // ------------------------------
 // UTILS
 // ------------------------------
-const GAP_PX = 24;
+const GAP_PX = 1;
 const DUPLICATES = 2;
 
 function hexToRgba(hex: string, alpha = 0.25) {
@@ -218,7 +372,7 @@ function TechIcon({ name }: { name: string }) {
 // HOOK: carrusel infinito reutilizable
 // ------------------------------
 function useInfiniteCarousel({
-  baseSpeed = 180,
+  baseSpeed = 80,
   pauseWhenOutOfView = true,
 }: {
   baseSpeed?: number; // px/s
@@ -234,6 +388,7 @@ function useInfiniteCarousel({
 
   const [itemWidth, setItemWidth] = useState<number>(360);
   const [visibleWidth, setVisibleWidth] = useState<number>(0);
+  
 
   const measure = useCallback(() => {
     if (itemRef.current) {
@@ -311,8 +466,8 @@ export default function ProjectsQA() {
   } = useInfiniteCarousel({ baseSpeed: 80 });
 
   const contentLength = filtered.length;
-  const loopWidth = contentLength * (itemWidth + GAP_PX);
-  const totalLoopWidth = loopWidth * DUPLICATES;
+  const loopWidth = contentLength * itemWidth;
+  const totalLoopWidth = loopWidth * DUPLICATES -1;
 
   useAnimationFrame(() => {
     resetIfNeeded(contentLength);
@@ -335,7 +490,7 @@ export default function ProjectsQA() {
   };
 
   const progress =
-    totalLoopWidth > 0 ? (Math.abs(x.get() % totalLoopWidth) / totalLoopWidth) * 100 : 0;
+    totalLoopWidth > 0 ? (Math.abs(x.get() % totalLoopWidth) / totalLoopWidth) * 250 : 0;
 
   const onDragStart = () => setPaused(true);
   const onDragEnd = () => setPaused(false);
@@ -408,25 +563,11 @@ export default function ProjectsQA() {
   }, [activeIndex, filtered]);
 
   return (
-    <section id="projects" className="py-20 bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="flex items-center justify-between gap-4 mb-8">
-          <h2 className="text-3xl font-bold">🧪 QA Skills</h2>
-
-          {/* Filtros */}
-          <div className="flex items-center gap-2">
-            {(["All", "Automation", "Manual", "API"] as const).map((f) => (
-              <Button
-                key={f}
-                size="sm"
-                variant={filter === f ? "default" : "outline"}
-                onClick={() => setFilter(f)}
-              >
-                {f}
-              </Button>
-            ))}
-          </div>
-        </div>
+<section id="showcase" className="py-20 bg-background text-foreground">
+  <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <div className="flex items-center justify-center gap-4 mb-8">
+      <h2 className="text-3xl font-bold">Testing Showcase</h2>
+    </div>
 
         {/* Controles globales */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -465,6 +606,20 @@ export default function ProjectsQA() {
               />
             </div>
           )}
+
+          {/* Filtros */}
+          <div className="flex items-center gap-2">
+            {(["All", "Automation", "Manual", "API"] as const).map((f) => (
+              <Button
+                key={f}
+                size="sm"
+                variant={filter === f ? "default" : "outline"}
+                onClick={() => setFilter(f)}
+              >
+                {f}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* Estado live */}

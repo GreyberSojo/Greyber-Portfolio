@@ -26,7 +26,6 @@ export type ProjectCardData = {
   repo?: string;
   caseStudy?: string;
   status?: string;
-  metrics?: { stars?: number };
 };
 
 const BLUR_DATA_URL =
@@ -150,11 +149,6 @@ export default function ProjectCard({ project, onOpen, density }: Props) {
           </div>
           <div className="font-medium">{project.title}</div>
         </div>
-        {project.metrics?.stars != null && (
-          <div className="text-xs px-2 py-1 rounded-full border border-yellow-400/50 bg-yellow-50/50 dark:bg-yellow-500/10 text-yellow-800 dark:text-yellow-300">
-            ⭐ {project.metrics.stars}
-          </div>
-        )}
       </CardContent>
     </Card>
   );

@@ -38,7 +38,7 @@ export default function Footer() {
                 href="#projects"
                 className="hover:text-blue-500 dark:hover:text-blue-400 transition"
               >
-                🚀 Proyectos
+                🚀 Showcase
               </a>
             </li>
             <li>

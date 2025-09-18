@@ -1,8 +1,8 @@
 // src/components/About.tsx
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import type { IconType } from "react-icons";
 import {
   FaCogs,
@@ -14,6 +14,9 @@ import {
   FaBug,
   FaBriefcase,
   FaGraduationCap,
+  FaClipboardList,
+  FaDatabase,
+  FaLayerGroup,
 } from "react-icons/fa";
 import { fadeUp } from "@/lib/animations";
 
@@ -32,16 +35,47 @@ function usePrefersReducedMotion() {
 }
 
 /* --------- Data --------- */
-const skills: { name: string; icon: IconType }[] = [
-  { name: "TOSCA", icon: FaCogs },
-  { name: "Playwright", icon: FaPlay },
-  { name: "Cypress", icon: FaCode },
-  { name: "Godot", icon: FaGamepad },
-  { name: "Unity", icon: FaGamepad },
-  { name: "Automatización", icon: FaRobot },
-  { name: "Testing Manual", icon: FaClipboardCheck },
-  { name: "Debugging", icon: FaBug },
-];
+const skillsByCategory: Record<string, { name: string; icon: IconType }[]> = {
+  QA: [
+    { name: "Manual Testing", icon: FaClipboardCheck },
+    { name: "Functional Testing", icon: FaClipboardCheck },
+    { name: "Regression Testing", icon: FaClipboardCheck },
+    { name: "Exploratory Testing", icon: FaClipboardCheck },
+    { name: "User Acceptance Testing (UAT)", icon: FaClipboardCheck },
+    { name: "Automatización QA", icon: FaRobot },
+    { name: "Tosca (Básico)", icon: FaCogs },
+    { name: "Playwright (Básico)", icon: FaPlay },
+    { name: "Cypress (En aprendizaje)", icon: FaCode },
+    { name: "Postman (APIs)", icon: FaCode },
+    { name: "JIRA / Xray", icon: FaClipboardList },
+    { name: "Spira", icon: FaClipboardList },
+    { name: "Cucumber", icon: FaCode },
+    { name: "TestRail", icon: FaClipboardList },
+    { name: "Debugging & Logs (PowerShell / Android Dev)", icon: FaBug },
+    { name: "SAP Finance (R2R)", icon: FaBriefcase },
+    { name: "Agile / Scrum / Kanban", icon: FaLayerGroup },
+  ],
+  Desarrollo: [
+    { name: "JavaScript", icon: FaCode },
+    { name: "HTML", icon: FaCode },
+    { name: "CSS", icon: FaCode },
+    { name: "Node.js", icon: FaCode },
+    { name: "Express", icon: FaCode },
+    { name: "MongoDB", icon: FaDatabase },
+    { name: "SQL", icon: FaDatabase },
+    { name: "Unity (C#)", icon: FaGamepad },
+    { name: "Godot (GDScript)", icon: FaGamepad },
+    { name: "Gameplay Loops", icon: FaPlay },
+    { name: "UI/UX en Juegos", icon: FaCode },
+    { name: "WordPress", icon: FaCode },
+  ],
+  Otros: [
+    { name: "Inglés (B2)", icon: FaGraduationCap },
+    { name: "Portugués (A1)", icon: FaGraduationCap },
+    { name: "Administración de Empresas", icon: FaGraduationCap },
+  ],
+};
+
 
 const experience: {
   year: string;
@@ -51,24 +85,38 @@ const experience: {
   icon: IconType;
 }[] = [
   {
-    year: "2023 – Actualidad",
-    title: "QA Engineer",
-    company: "Empresa XYZ",
-    desc: "Automatización con Playwright, Cypress y TOSCA. Pruebas manuales/exploratorias, reporte de bugs y soporte en CI.",
+    year: "May 2024 – Jun 2025",
+    title: "QA Analyst – SAP Finance",
+    company: "Globant",
+    desc: "Pruebas funcionales, de regresión y UAT en SAP GUI (Record-to-Report). Validación de transacciones críticas en entornos financieros, diseño de casos de prueba y reporting de defectos en JIRA/Xray. Optimización de dashboards que mejoraron la calidad del proceso en un 15%. Implementación de automatización básica con Tosca y Playwright para reducir tiempos manuales. Colaboración con equipos funcionales y de desarrollo bajo metodología Agile.",
     icon: FaBriefcase,
   },
   {
-    year: "2021 – 2023",
+    year: "Apr 2022 – May 2024",
+    title: "QC Analyst – OTT & STB (Device Testing)",
+    company: "Globant",
+    desc: "Diseño y ejecución de pruebas manuales y end-to-end en OTT y dispositivos STB, validando apps como HBO Max, YouTube, Netflix, Star+ y Spotify. Reporte detallado de bugs en JIRA, logrando reducir en un 20% el tiempo de resolución. Uso de Postman para pruebas de APIs y análisis de logs con PowerShell y Android Developer Options para detección de errores. Gestión de métricas de calidad con Spira en entornos Agile/Scrum.",
+    icon: FaBriefcase,
+  },
+  {
+    year: "2023 – Actualidad",
     title: "Game Developer (Freelance)",
-    company: "Proyectos Indie",
-    desc: "Prototipos con Godot/Unity, gameplay loops, pipelines simples de build y testing en juegos.",
+    company: "Indie Games",
+    desc: "Desarrollo de prototipos 2D/3D en Unity (C#) y Godot (GDScript), con foco en gameplay loops, sistemas de IA, físicas, interfaces de usuario y estabilidad de los juegos. Aplicación de OOP y testing de mecánicas de juego para optimizar la experiencia del jugador.",
     icon: FaGamepad,
   },
   {
-    year: "2019 – 2021",
-    title: "Ingeniería de Software",
-    company: "Formación",
-    desc: "Bases sólidas de calidad de software, patrones, testing y SDLC.",
+    year: "2022 - 2023",
+    title: "The Web Developer Bootcamp 2023",
+    company: "Udemy – Instructor Colt Steele",
+    desc: "Certificación de 74 horas en desarrollo web full-stack. Fundamentos de HTML, CSS, JavaScript, Node.js, Express y MongoDB. Enfoque práctico con proyectos reales, buenas prácticas y despliegue de aplicaciones.",
+    icon: FaGraduationCap,
+  },
+  {
+    year: "2012 - 2015",
+    title: "T.S.U en Administración de Empresas",
+    company: "UPTBAL “Argelia Laya”",
+    desc: "Formación en gestión, planificación y control de organizaciones, con énfasis en finanzas, marketing, recursos humanos y estrategia empresarial. Desarrollo de competencias en análisis financiero, liderazgo y toma de decisiones.",
     icon: FaGraduationCap,
   },
 ];
@@ -90,53 +138,40 @@ export default function About() {
     ? {}
     : { variants: fadeUp, initial: "hidden", whileInView: "show", viewport: { once: true, margin: "-100px" } };
 
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
+
   return (
     <section
       id="about"
       role="region"
       aria-label="Sobre mí"
-      className="
-        relative py-20 scroll-mt-24
-        bg-background text-foreground
-      "
+      className="relative py-20 scroll-mt-24 bg-background text-foreground"
     >
-      {/* Fondo suave con la marca (usa variables del tema) */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to bottom right, color-mix(in oklab, var(--primary) 5%, var(--background)), var(--background))",
-        }}
-      />
-      {/* Grid sutil */}
-      <div
-        aria-hidden
-        className="
-          absolute inset-0
-          opacity-[0.035] dark:opacity-[0.06]
-          bg-[linear-gradient(to_right,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px)]
-          bg-[size:32px_32px]
-        "
-      />
-
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-8">
         {/* Título */}
-        <motion.h2
-          {...mv}
-          className="text-3xl md:text-5xl font-extrabold text-center"
-        >
+        <motion.h2 {...mv} className="text-3xl md:text-5xl font-extrabold text-center">
           Sobre mí
         </motion.h2>
 
-        {/* Intro */}
-        <motion.p
+        {/* Intro extendida */}
+       <motion.p
           {...mv}
-          className="mx-auto mt-6 max-w-3xl text-lg md:text-xl text-foreground/75 text-center"
+          className="mx-auto mt-6 max-w-4xl text-lg md:text-xl text-foreground/75 text-center"
         >
-          Soy <span className="font-semibold text-primary">QA Engineer</span> y{" "}
-          <span className="font-semibold text-primary">Game Developer</span>. Me
-          enfoco en automatización, pruebas robustas y experiencias de juego limpias y estables.
+          Soy un <span className="font-semibold text-primary">QA Analyst</span> con más de{" "}
+          <span className="font-semibold">3 años de experiencia</span> en pruebas{" "}
+          <span className="font-semibold">manuales, funcionales y UAT</span>, con conocimientos en{" "}
+          <span className="font-semibold">automatización</span> usando Tosca, Playwright y Cypress (en aprendizaje).  
+          He trabajado en proyectos de{" "}
+          <span className="font-semibold">OTT/STB</span> validando apps como HBO Max, Netflix y Spotify, 
+          y en <span className="font-semibold">SAP Finance (R2R)</span>, asegurando la calidad de procesos financieros críticos.  
+
+          Además, complemento mi perfil con{" "}
+          <span className="font-semibold">desarrollo de videojuegos</span> en Unity (C#) y Godot (GDScript), 
+          y <span className="font-semibold">desarrollo web full-stack</span> con JavaScript, HTML, CSS, Node.js, Express y MongoDB.  
+
+          Me defino como <span className="font-semibold">metódico, detallista y orientado a resultados</span>, 
+          siempre buscando entregar software de calidad y mejorar continuamente.
         </motion.p>
 
         {/* Timeline */}
@@ -148,7 +183,7 @@ export default function About() {
           viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
           className="relative mt-16"
         >
-          {/* Línea central (desktop) */}
+          {/* Línea central */}
           <div
             className="hidden md:block pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-full w-[2px] rounded-full"
             style={{
@@ -161,102 +196,61 @@ export default function About() {
           {experience.map((exp, idx) => {
             const Icon = exp.icon;
             const leftSide = idx % 2 === 0;
+            const isExpanded = !!expanded[idx];
+
             return (
               <motion.li
                 key={`${exp.title}-${exp.year}`}
                 variants={fadeUp}
-                className="
-                  relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]
-                  items-start md:items-center gap-6 md:gap-10 mb-12
-                "
+                className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start md:items-center gap-6 md:gap-10 mb-12"
               >
-                {/* Columna (según índice) */}
+                {/* Card */}
                 <div
                   className={`${
                     leftSide
                       ? "md:col-start-1 md:justify-self-end"
                       : "md:col-start-3 md:justify-self-start"
-                  } max-w-xl`}
+                  } max-w-xl relative`}
                 >
-                  <article
-                    className="
-                      relative p-5 rounded-xl border bg-card/80 backdrop-blur-sm
-                      border-border shadow-sm
-                    "
-                  >
-                    {/* Conector a la línea central (desktop) */}
-                    <span
-                      aria-hidden
-                      className={`hidden md:block absolute top-7 h-[2px] w-10`}
-                      style={{
-                        background:
-                          "color-mix(in oklab, var(--primary) 40%, var(--border))",
-                        [leftSide ? "right" : "left"]: "-2.5rem",
-                      } as React.CSSProperties}
-                    />
+                  {/* 🔹 Conector hacia la línea central */}
+                  <span
+                    aria-hidden
+                    className={`hidden md:block absolute top-7 h-[2px] w-10`}
+                    style={{
+                      background: "color-mix(in oklab, var(--primary) 40%, var(--border))",
+                      [leftSide ? "right" : "left"]: "-2.5rem", // Ajusta según ancho de gap
+                    } as React.CSSProperties}
+                  />
 
+                  <article className="relative p-5 rounded-xl border bg-card/80 backdrop-blur-sm border-border shadow-sm">
                     <div className="flex items-start gap-3">
-                      <span
-                        className="inline-flex items-center justify-center w-10 h-10 rounded-full border"
-                        style={{
-                          background:
-                            "color-mix(in oklab, var(--primary) 12%, var(--background))",
-                          borderColor:
-                            "color-mix(in oklab, var(--primary) 35%, var(--border))",
-                          color:
-                            "color-mix(in oklab, var(--primary) 75%, var(--foreground))",
-                        }}
-                        aria-hidden
-                      >
+                      <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border text-primary">
                         <Icon />
                       </span>
                       <div className="leading-tight">
-                        <h3 className="text-lg md:text-xl font-semibold">
-                          {exp.title}
-                        </h3>
+                        <h3 className="text-lg md:text-xl font-semibold">{exp.title}</h3>
                         <p className="text-sm text-foreground/60">{exp.company}</p>
                       </div>
                     </div>
-
-                    <span className="mt-2 block text-sm font-medium text-primary">
-                      {exp.year}
-                    </span>
-                    <p className="mt-2 text-foreground/80">{exp.desc}</p>
-                  </article>
-                </div>
-
-                {/* Punto central */}
-                <div className="hidden md:flex md:col-start-2 items-center justify-center">
-                  <div className="relative">
-                    {!reduced && (
-                      <span
-                        className="absolute inset-0 rounded-full blur-md opacity-40 animate-pulse"
-                        style={{
-                          background:
-                            "color-mix(in oklab, var(--primary) 60%, transparent)",
-                        }}
-                        aria-hidden
-                      />
-                    )}
-                    <div
-                      className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center ring-8 shadow-xl"
-                      style={{
-                        background: "var(--primary)",
-                        color: "var(--primary-foreground)",
-                        boxShadow:
-                          "0 12px 30px color-mix(in oklab, var(--primary) 35%, transparent)",
-                        ringColor: "color-mix(in oklab, var(--background) 70%, transparent)",
-                      } as React.CSSProperties}
-                      aria-hidden
-                    >
-                      <Icon />
+                    <span className="mt-2 block text-sm font-medium text-primary">{exp.year}</span>
+                    <div className="mt-2 relative">
+                      <p className={`text-foreground/80 ${isExpanded ? "" : "line-clamp-4"}`}>
+                        {exp.desc}
+                      </p>
+                      <button
+                        onClick={() => setExpanded((prev) => ({ ...prev, [idx]: !isExpanded }))}
+                        className="mt-2 text-primary text-sm font-medium hover:underline"
+                      >
+                        {isExpanded ? "Ver menos" : "Ver más"}
+                      </button>
                     </div>
-                  </div>
+                  </article>
                 </div>
               </motion.li>
             );
           })}
         </motion.ol>
+
 
         {/* Skills */}
         <motion.div
@@ -268,34 +262,32 @@ export default function About() {
           className="mt-16"
         >
           <h3 className="text-center text-xl font-semibold">Skills y herramientas</h3>
-          <ul className="mt-6 flex flex-wrap justify-center gap-3">
-            {skills.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <motion.li
-                  key={s.name}
-                  variants={fadeUp}
-                  transition={
-                    reduced ? { duration: 0 } : { delay: i * 0.04, duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-                  }
-                  className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-colors"
-                  style={{
-                    background:
-                      "color-mix(in oklab, var(--primary) 10%, var(--background))",
-                    borderColor:
-                      "color-mix(in oklab, var(--primary) 35%, var(--border))",
-                    color:
-                      "color-mix(in oklab, var(--primary) 70%, var(--foreground))",
-                  }}
-                >
-                  <span className="inline-flex items-center justify-center w-5 h-5">
-                    <Icon />
-                  </span>
-                  <span className="font-medium">{s.name}</span>
-                </motion.li>
-              );
-            })}
-          </ul>
+          <div className="mt-6 grid gap-8 sm:grid-cols-2">
+            {Object.entries(skillsByCategory).map(([category, items]) => (
+              <div key={category} className="rounded-xl border border-border bg-card/60 p-4">
+                <h4 className="text-center text-primary font-semibold mb-3">{category}</h4>
+                <ul className="flex flex-wrap justify-center gap-2">
+                  {items.map((s) => {
+                    const Icon = s.icon;
+                    return (
+                      <li
+                        key={s.name}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] leading-none"
+                        style={{
+                          background: "color-mix(in oklab, var(--primary) 10%, var(--background))",
+                          borderColor: "color-mix(in oklab, var(--primary) 35%, var(--border))",
+                          color: "color-mix(in oklab, var(--primary) 70%, var(--foreground))",
+                        }}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {s.name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

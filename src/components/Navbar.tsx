@@ -11,7 +11,7 @@ type NavItem = { href: `#${string}`; label: string };
 
 const NAV_ITEMS: NavItem[] = [
   { href: "#home", label: "Home" },
-  { href: "#projects", label: "Proyectos" },
+  { href: "#showcase", label: "Showcase" },
   { href: "#about", label: "Sobre mí" },
   { href: "#contact", label: "Contacto" },
 ];
@@ -163,15 +163,16 @@ export default function Navbar() {
         Saltar al contenido principal
       </a>
 
-      <nav
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm"
-            : "bg-transparent"
-        )}
-        aria-label="Principal"
-      >
+        <nav
+          className={cn(
+            "fixed top-0 left-0 right-0 z-50",
+            "transition-colors duration-300",
+            "border-b backdrop-blur-md",
+            isScrolled ? "bg-background/80 border-border shadow-sm" : "bg-background/0 border-transparent"
+          )}
+          aria-label="Principal"
+          style={{ willChange: "background-color, backdrop-filter" }}
+        >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between gap-4">
             {/* Logo */}
@@ -209,20 +210,6 @@ export default function Navbar() {
                 </a>
 
                 <DarkModeToggle />
-
-                <div className="flex items-center gap-2 text-sm">
-                  <FaGlobe aria-hidden />
-                  <label htmlFor="lang" className="sr-only">Idioma</label>
-                  <select
-                    id="lang"
-                    className="bg-transparent outline-none cursor-pointer text-foreground/70 hover:text-foreground"
-                    defaultValue="ES"
-                    aria-label="Cambiar idioma"
-                  >
-                    <option value="ES">ES</option>
-                    <option value="EN">EN</option>
-                  </select>
-                </div>
               </div>
             </div>
 

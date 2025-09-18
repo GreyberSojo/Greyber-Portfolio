@@ -30,7 +30,7 @@ export default function Hero() {
       className="
         relative w-full min-h-[86vh] md:min-h-screen overflow-hidden
         flex items-center
-        bg-background text-foreground
+        bg-background text-foreground 
       "
     >
       {/* Fondo: gradiente sutil con la marca */}
@@ -48,7 +48,7 @@ export default function Hero() {
         className="
           absolute inset-0
           opacity-[0.035] dark:opacity-[0.06]
-          bg-[linear-gradient(to_right,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px)]
+          bg-[linear-gradient(to_right,color-mix(in_oklab,var(--primary)_80%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--primary)_16%,transparent)_1px,transparent_1px)]
           bg-[size:32px_32px]
         "
       />
@@ -99,7 +99,7 @@ export default function Hero() {
                 variant="default"
                 className="shadow-[0_10px_25px_0_color-mix(in_oklab,var(--primary)_20%,transparent)]"
               >
-                <a href="#projects" aria-label="Ir a proyectos" className="inline-flex items-center gap-2">
+                <a href="#skills" aria-label="Ir a Skills" className="inline-flex items-center gap-2">
                   Explora mi trabajo <FaArrowRight />
                 </a>
               </Button>

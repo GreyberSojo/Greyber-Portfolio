@@ -1,17 +1,22 @@
-// src/components/ProjectsGames.tsx
+// src/components/ProjectsGames.tsx (improved)
 "use client";
 
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
-import { PROJECTS, type Project } from "@/data/projects";
+import { PROJECTS, type Project, type Media } from "@/data/projects";
+import { X, ExternalLink, Github, PlayCircle, Info } from "lucide-react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
 type Mode = "simple" | "advanced";
+
+type SortValue = "recent" | "oldest" | "az" | "stars";
 
 const TYPES: { label: string; value: ProjectType | "all" }[] = [
   { label: "Todos", value: "all" },
@@ -21,12 +26,11 @@ const TYPES: { label: string; value: ProjectType | "all" }[] = [
   { label: "QA", value: "qa" },
 ];
 
-const SORTS = [
+const SORTS: { label: string; value: SortValue }[] = [
   { label: "Más recientes", value: "recent" },
   { label: "Más antiguos", value: "oldest" },
   { label: "A–Z", value: "az" },
-  { label: "Popularidad (⭐)", value: "stars" },
-] as const;
+];
 
 const BLUR_DATA_URL =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNTAwJyBoZWlnaHQ9JzI4MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjMjIyJy8+PC9zdmc+";
@@ -67,8 +71,8 @@ function FiltersBar({
   allTags: string[];
   selectedTags: string[];
   toggleTag: (t: string) => void;
-  sort: typeof SORTS[number]["value"];
-  setSort: (s: typeof SORTS[number]["value"]) => void;
+  sort: SortValue;
+  setSort: (s: SortValue) => void;
 }) {
   return (
     <div className="max-w-6xl mx-auto mb-8 flex flex-col gap-4">
@@ -103,7 +107,7 @@ function FiltersBar({
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
+          onChange={(e) => setSort(e.target.value as SortValue)}
           className="px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           aria-label="Ordenar proyectos"
         >
@@ -138,20 +142,70 @@ function FiltersBar({
   );
 }
 
+// ---- Media component (image / gif / video) ----
+function ProjectMedia({ project }: { project: Project }) {
+  const medias = Array.isArray(project.cover) ? project.cover : [project.cover];
+  const [index, setIndex] = useState(0);
+
+  const current = medias[index];
+
+  return (
+    <div className="relative aspect-[16/9] bg-muted">
+      {current.type === "video" ? (
+        <video
+          className="h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={current.src}
+          src={current.src}
+        />
+      ) : (
+        <Image
+          src={current.src}
+          alt={project.title}
+          fill
+          className="object-cover"
+        />
+      )}
+
+      {/* Botones next/prev si hay varias */}
+      {medias.length > 1 && (
+        <div className="absolute inset-0 flex justify-between items-center px-2">
+          <button
+            onClick={() => setIndex((i) => (i - 1 + medias.length) % medias.length)}
+            className="bg-black/50 text-white px-2 py-1 rounded-full"
+          >
+            <FaArrowLeft aria-hidden />
+          </button>
+          <button
+            onClick={() => setIndex((i) => (i + 1) % medias.length)}
+            className="bg-black/50 text-white px-2 py-1 rounded-full"
+          >
+            <FaArrowRight aria-hidden />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 // ---- Modal de vista rápida ----
-function QuickViewModal({
-  project,
-  onClose,
-}: {
-  project: Project | null;
-  onClose: () => void;
-}) {
+function QuickViewModal({ project, onClose }: { project: Project | null; onClose: () => void }) {
   const reduce = usePrefersReducedMotion();
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey as any);
+    return () => window.removeEventListener("keydown", onKey as any);
   }, [onClose]);
+
+  useEffect(() => {
+    if (project && closeBtnRef.current) closeBtnRef.current.focus();
+  }, [project]);
 
   if (!project) return null;
 
@@ -164,6 +218,9 @@ function QuickViewModal({
         transition={reduce ? { duration: 0 } : { duration: 0.2 }}
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
         onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Vista rápida de ${project.title}`}
       >
         <motion.div
           initial={{ y: reduce ? 0 : 20, opacity: 0 }}
@@ -173,22 +230,56 @@ function QuickViewModal({
           className="w-full max-w-3xl bg-background rounded-2xl overflow-hidden border border-border shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative aspect-[16/9] bg-background">
-            <Image
-              src={project.cover.src}
-              alt={project.title}
-              fill
-              className="object-cover"
-              placeholder="blur"
-              blurDataURL={BLUR_DATA_URL}
-            />
+          <div className="relative aspect-[16/9] bg-muted">
+            <ProjectMedia project={project} />
             <div className="absolute left-2 top-2 text-xs px-2 py-1 rounded-full bg-black/50 text-white">
               {project.type.toUpperCase()} • {project.year}
             </div>
+            <button
+              ref={closeBtnRef}
+              aria-label="Cerrar"
+              className="absolute right-2 top-2 inline-flex items-center gap-2 rounded-full bg-black/50 text-white px-2 py-1 text-xs hover:bg-black/60"
+              onClick={onClose}
+            >
+              <X className="h-4 w-4" /> Cerrar
+            </button>
           </div>
-          <div className="p-4 md:p-6 flex flex-col gap-3">
-            <h3 className="text-xl md:text-2xl font-semibold">{project.title}</h3>
-            <p className="text-sm text-foreground/70">{project.summary}</p>
+
+          <div className="p-4 md:p-6 flex flex-col gap-4">
+            <div>
+              <h3 className="text-xl md:text-2xl font-semibold flex items-center gap-2">
+                {project.title}
+                {project.status && (
+                  <span className="text-xs px-2 py-0.5 rounded-full border border-border bg-foreground/[.03]">
+                    {project.status}
+                  </span>
+                )}
+              </h3>
+              {project.summary && (
+                <p className="mt-1 text-sm text-foreground/70">{project.summary}</p>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {project.tech?.slice(0, 6).map((t) => (
+                <span
+                  key={t}
+                  className="text-xs px-2 py-1 rounded-full border border-border bg-foreground/[.03]"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {project.repo && (
+                <Link href={project.repo} target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" variant="secondary" className="inline-flex gap-2">
+                    <Github className="h-4 w-4" /> Repo
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </motion.div>
       </motion.div>
@@ -196,8 +287,18 @@ function QuickViewModal({
   );
 }
 
+function toCardCover(cover: Media | Media[] | undefined): ProjectCardData["cover"] {
+  if (!cover) {
+    // opcional: un fallback genérico
+    return { src: "/placeholder.png", type: "image" } as const;
+  }
+  const m = Array.isArray(cover) ? cover[0] : cover;
+  // Asegurate de que m tiene shape compatible con ProjectCardCover
+  return { src: m.src, type: m.type, poster: m.poster } as const;
+}
+
 // ---- Grilla simple ----
-function SimpleGrid({ items }: { items: Project[] }) {
+function SimpleGrid({ items, onOpen }: { items: Project[]; onOpen: (p: Project) => void }) {
   const cards: ProjectCardData[] = useMemo(
     () =>
       items.map((p) => ({
@@ -208,21 +309,21 @@ function SimpleGrid({ items }: { items: Project[] }) {
         type: p.type,
         tech: p.tech,
         tags: p.tags,
-        cover: p.cover,
-        demo: p.demo,
+        cover: toCardCover(p.cover),
         repo: p.repo,
-        caseStudy: p.caseStudy,
         status: p.status,
         metrics: p.metrics,
       })),
     [items]
   );
+  
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {cards.map((p) => (
-        <ProjectCard key={p.slug} project={p} onOpen={() => {}} />
-      ))}
+      {cards.map((p) => {
+        const full = items.find((f) => f.slug === p.slug)!;
+        return <ProjectCard key={p.slug} project={p} onOpen={() => onOpen(full)} />;
+      })}
     </div>
   );
 }
@@ -251,8 +352,8 @@ function AdvancedGrid({
   allTags: string[];
   selectedTags: string[];
   toggleTag: (t: string) => void;
-  sort: typeof SORTS[number]["value"];
-  setSort: (s: typeof SORTS[number]["value"]) => void;
+  sort: SortValue;
+  setSort: (s: SortValue) => void;
   onOpen: (p: Project) => void;
 }) {
   const cards: ProjectCardData[] = useMemo(
@@ -265,16 +366,14 @@ function AdvancedGrid({
         type: p.type,
         tech: p.tech,
         tags: p.tags,
-        cover: p.cover,
-        demo: p.demo,
+        cover: toCardCover(p.cover),
         repo: p.repo,
-        caseStudy: p.caseStudy,
         status: p.status,
         metrics: p.metrics,
       })),
     [filtered]
   );
-
+  
   return (
     <>
       <FiltersBar
@@ -301,11 +400,14 @@ function AdvancedGrid({
 // ---- Principal con botón toggle ----
 export default function ProjectsGames() {
   const reduce = usePrefersReducedMotion();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [mode, setMode] = useState<Mode>("simple");
   const [search, setSearch] = useState("");
   const [selectedType, setSelectedType] = useState<ProjectType | "all">("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [sort, setSort] = useState<(typeof SORTS)[number]["value"]>("recent");
+  const [sort, setSort] = useState<SortValue>("recent");
   const [active, setActive] = useState<Project | null>(null);
 
   const allTags = useMemo(
@@ -337,16 +439,37 @@ export default function ProjectsGames() {
         break;
       case "oldest":
         list = list.sort((a, b) => a.year - b.year);
-        break;
+        break; 
       case "az":
         list = list.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "stars":
-        list = list.sort((a, b) => (b.metrics?.stars ?? 0) - (a.metrics?.stars ?? 0));
         break;
     }
     return list;
   }, [search, selectedType, selectedTags, sort]);
+
+  // Deep-link: ?project=slug to open modal directly
+  useEffect(() => {
+    const slug = searchParams?.get("project");
+    if (!slug || active) return;
+    const p = PROJECTS.find((x) => x.slug === slug);
+    if (p) setActive(p);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const openProject = useCallback((p: Project) => {
+    setActive(p);
+    const params = new URLSearchParams(Array.from(searchParams?.entries() ?? []));
+    params.set("project", p.slug);
+    router.push(`?${params.toString()}`, { scroll: false });
+    track("open_project", { slug: p.slug });
+  }, [router, searchParams]);
+
+  const closeProject = useCallback(() => {
+    setActive(null);
+    const params = new URLSearchParams(Array.from(searchParams?.entries() ?? []));
+    params.delete("project");
+    router.push(`?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
 
   return (
     <section className="w-full bg-background text-foreground py-16 px-6">
@@ -359,6 +482,11 @@ export default function ProjectsGames() {
       >
         Proyectos (Games • Web • QA)
       </motion.h2>
+
+      <p className="text-center text-sm text-foreground/70 max-w-2xl mx-auto mb-6">
+        Explora mis proyectos. Haz clic en cualquier tarjeta para una vista rápida con video/imagen,
+        una breve descripción y accesos directos a la demo y el repositorio.
+      </p>
 
       <div className="text-center mb-8">
         <Button
@@ -382,19 +510,21 @@ export default function ProjectsGames() {
           toggleTag={toggleTag}
           sort={sort}
           setSort={setSort}
-          onOpen={(p) => setActive(p)}
+          onOpen={openProject}
         />
       ) : (
-        <SimpleGrid items={[...PROJECTS]} />
+        <SimpleGrid items={[...PROJECTS]} onOpen={openProject} />
       )}
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-        <a href="https://github.com/greyber" target="_blank" rel="noopener noreferrer">
-          <Button variant="outline">Ver todo en GitHub</Button>
-        </a>
+        <Link href="https://github.com/GreyberSojo?tab=repositories" target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="inline-flex gap-2">
+            <Github className="h-4 w-4" /> Ver todo en GitHub
+          </Button>
+        </Link>
       </div>
 
-      <QuickViewModal project={active} onClose={() => setActive(null)} />
+      <QuickViewModal project={active} onClose={closeProject} />
     </section>
   );
 }
