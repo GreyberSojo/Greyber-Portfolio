@@ -62,7 +62,7 @@ export default function Footer() {
         <div className="flex flex-col items-center md:items-end gap-3">
           <div className="flex gap-4 text-2xl">
             <a
-              href="https://github.com/"
+              href="https://github.com/GreyberSojo"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition transform hover:scale-110"
@@ -71,7 +71,7 @@ export default function Footer() {
               <FaGithub />
             </a>
             <a
-              href="https://linkedin.com/"
+              href="https://www.linkedin.com/in/greyber-sojo/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-500 transition transform hover:scale-110"

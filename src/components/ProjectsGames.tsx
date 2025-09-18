@@ -283,12 +283,11 @@ function toCardCover(cover: Media | Media[] | undefined): ProjectCardData["cover
     return { src: "/placeholder.png", type: "image" } as const;
   }
   const m = Array.isArray(cover) ? cover[0] : cover;
-  // Asegurate de que m tiene shape compatible con ProjectCardCover
   return { src: m.src, type: m.type, poster: m.poster } as const;
 }
 
-// ---- Grilla simple ----
 function SimpleGrid({ items, onOpen }: { items: Project[]; onOpen: (p: Project) => void }) {
+  const reduce = usePrefersReducedMotion();
   const cards: ProjectCardData[] = useMemo(
     () =>
       items.map((p) => ({
@@ -307,12 +306,21 @@ function SimpleGrid({ items, onOpen }: { items: Project[]; onOpen: (p: Project) 
     [items]
   );
   
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {cards.map((p) => {
+      {cards.map((p, idx) => {
         const full = items.find((f) => f.slug === p.slug)!;
-        return <ProjectCard key={p.slug} project={p} onOpen={() => onOpen(full)} />;
+        return (
+          <motion.div
+            key={p.slug}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: reduce ? 0 : 0.5, ease: "easeOut", delay: Math.min(idx * 0.05, 0.3) }}
+          >
+            <ProjectCard project={p} onOpen={() => onOpen(full)} />
+          </motion.div>
+        );
       })}
     </div>
   );
@@ -344,6 +352,7 @@ function AdvancedGrid({
   setSort: (s: SortValue) => void;
   onOpen: (p: Project) => void;
 }) {
+  const reduce = usePrefersReducedMotion();
   const cards: ProjectCardData[] = useMemo(
     () =>
       filtered.map((p) => ({
@@ -376,9 +385,19 @@ function AdvancedGrid({
         setSort={setSort}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {cards.map((p) => {
+        {cards.map((p, idx) => {
           const full = filtered.find((f) => f.slug === p.slug)!;
-          return <ProjectCard key={p.slug} project={p} onOpen={() => onOpen(full)} />;
+          return (
+            <motion.div
+              key={p.slug}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: reduce ? 0 : 0.5, ease: "easeOut", delay: Math.min(idx * 0.05, 0.3) }}
+            >
+              <ProjectCard project={p} onOpen={() => onOpen(full)} />
+            </motion.div>
+          );
         })}
       </div>
     </>
