@@ -8,6 +8,8 @@ import { FaArrowRight, FaCheckCircle,FaDownload } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
 import { fadeUp } from "@/lib/animations";
+import { prefix } from "@/lib/prefix"
+
 
 import animationData from "../../public/lotties/qa-automation.json";
 
@@ -76,7 +78,7 @@ export default function Hero() {
               />
               <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full ring-4 ring-[var(--primary)] overflow-hidden shadow-xl">
                 <Image
-                  src="/images/avatar.png"
+                  src={`${prefix}/images/avatar.png`}
                   alt="Foto de Greyber Sojo"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"

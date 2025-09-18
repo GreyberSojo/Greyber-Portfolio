@@ -1,5 +1,6 @@
 // src/data/projects.ts
 // Tipos + datos en un solo lugar para mantenerlo simple.
+import { prefix } from "@/lib/prefix"
 
 export type ProjectType = "game" | "web" | "tool" | "qa";
 export type ProjectStatus = "Work In Progress" | "Done" | "Prototype";
@@ -36,10 +37,10 @@ export const PROJECTS: ReadonlyArray<Project> = [
     tech: ["Godot", "GDScript", "Logic"],
     tags: ["Procedural", "2D", "Pixel"],
     cover: [
-      { src: "/dsm/game_battle.png", type: "image", poster: "/dsm/game_battle.png" },
-      { src: "/dsm/game_boss.png", type: "image" },
-      { src: "/dsm/game_engine.png", type: "image" },
-      { src: "/dsm/game_loot.png", type: "image" },
+      { src: `${prefix}/dsm/game_battle.png`, type: "image", poster: `${prefix}/dsm/game_battle.png` },
+      { src: `${prefix}/dsm/game_boss.png`, type: "image" },
+      { src: `${prefix}/dsm/game_engine.png`, type: "image" },
+      { src: `${prefix}/dsm/game_loot.png`, type: "image" },
     ],
     repo: "https://github.com/GreyberSojo/DungeonSupplyMaster",
     status: "Prototype",
@@ -56,10 +57,10 @@ export const PROJECTS: ReadonlyArray<Project> = [
     tech: ["Unity", "C#", "State Machines", "UI", "UX", "AI", "PixelArt", "3D", "2.5D"],
     tags: ["Cartas", "2.5D", "IA (roadmap)", "Online (roadmap)", "Pixel", "Truco", "Argentine"],
     cover: [
-      { src: "/truco/truco-preview-unity.mp4", type: "video", poster: "/truco/truco.png" },
-      { src: "/truco/truco.png", type: "image" },
-      { src: "/truco/code-preview.png", type: "image" },
-      { src: "/truco/unity-truco.png", type: "image" },
+      { src: `${prefix}/truco/truco-preview-unity.mp4`, type: "video", poster: `${prefix}/truco/truco.png` },
+      { src: `${prefix}/truco/truco.png`, type: "image" },
+      { src: `${prefix}/truco/code-preview.png`, type: "image" },
+      { src: `${prefix}/truco/unity-truco.png`, type: "image" },
     ],
     repo: "https://github.com/GreyberSojo/",
     status: "Work In Progress",
@@ -76,11 +77,11 @@ export const PROJECTS: ReadonlyArray<Project> = [
     tech: ["Next.js", "Tailwind", "Framer Motion", "shadcn/ui", "Windsurf", "TypeScript", "Framer Motion", "Windsurf"],
     tags: ["SEO", "Accesibilidad", "Animaciones", "Dark/Light mode", "Componentes reusables", "Secciones animadas"],
     cover: [      
-      { src: "/portfolio/video-preview.mp4", type: "video", poster: "/portfolio/home.png" },
-      { src: "/portfolio/home.png", type: "image" },
-      { src: "/portfolio/contact.png", type: "image" },
-      { src: "/portfolio/showcase.png", type: "image" },
-      { src: "/portfolio/windsurf.png", type: "image" },
+      { src: `${prefix}/portfolio/video-preview.mp4`, type: "video", poster: `${prefix}/portfolio/home.png` },
+      { src: `${prefix}/portfolio/home.png`, type: "image" },
+      { src: `${prefix}/portfolio/contact.png`, type: "image" },
+      { src: `${prefix}/portfolio/showcase.png`, type: "image" },
+      { src: `${prefix}/portfolio/windsurf.png`, type: "image" },
     ],
     repo: "https://github.com/GreyberSojo/greyber-portfolio",
     status: "Done",
