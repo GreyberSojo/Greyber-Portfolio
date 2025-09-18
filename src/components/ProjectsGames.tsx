@@ -11,7 +11,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 import ProjectCard, { type ProjectCardData } from "@/components/ProjectCard";
 import { Button } from "@/components/ui/button";
-import { type Media,type Project, PROJECTS } from "@/data/projects";
+import { getAllTags,type Media, type Project, PROJECTS } from "@/data/projects";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 
 // ---- Types & constants ----
 export type ProjectType = "game" | "web" | "tool" | "qa";
@@ -38,19 +39,6 @@ const SORTS: { label: string; value: SortValue }[] = [
 // ---- Utils ----
 const track = (event: string, data?: Record<string, unknown>) =>
   console.log(`[analytics] ${event}`, data);
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = () => setReduced(mq.matches);
-    onChange();
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
-  return reduced;
-}
 
 // ---- Filtros ----
 function FiltersBar({
@@ -410,10 +398,7 @@ export default function ProjectsGames() {
   const [sort, setSort] = useState<SortValue>("recent");
   const [active, setActive] = useState<Project | null>(null);
 
-  const allTags = useMemo(
-    () => Array.from(new Set(PROJECTS.flatMap((p) => p.tags))).sort(),
-    []
-  );
+  const allTags = useMemo(() => getAllTags(), []);
 
   const toggleTag = useCallback(
     (t: string) =>

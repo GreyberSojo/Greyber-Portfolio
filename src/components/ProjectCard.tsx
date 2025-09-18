@@ -4,29 +4,24 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import Link from "next/link";
-import { KeyboardEvent,useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 export type ProjectCardCover =
   | { type: "image"; src: string }
   | { type: "video"; src: string; poster?: string };
 
-export type ProjectCardData = {
-  slug: string;
-  title: string;
-  summary: string;
-  year: number;
-  type: string;
-  tech: string[];
-  tags: string[];
+export type ProjectCardData = Pick<
+  Project,
+  "slug" | "title" | "summary" | "year" | "type" | "tech" | "tags" | "repo" | "status"
+> & {
   cover: ProjectCardCover;
   demo?: string;
-  repo?: string;
   caseStudy?: string;
-  status?: string;
 };
 
 const BLUR_DATA_URL =

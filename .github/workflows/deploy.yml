@@ -1,39 +1,45 @@
-name: Deploy to GitHub Pages
+name: Deploy Next.js to GitHub Pages
+
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
 
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
 
       - run: npm ci
+      - run: npm run build       # creates ./out
 
-      # DEBUG: verify which PostCSS config is in the repo
-      - run: |
-          echo "== PostCSS configs in repo =="
-          ls -la postcss.config.* || true
-          echo "== Show postcss.config.mjs =="
-          cat postcss.config.mjs || true
-          echo "== Show globals.css first lines =="
-          sed -n '1,40p' src/styles/globals.css || true
-
-      - run: npm run build   # produces /out if you set output:'export'
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

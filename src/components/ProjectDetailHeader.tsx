@@ -3,9 +3,10 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Project } from "@/data/projects";
+import { firstMedia } from "@/lib/utils";
 
 export default function ProjectDetailHeader({ project }: { project: Project }) {
-  const cover = Array.isArray(project.cover) ? project.cover[0] : project.cover;
+  const cover = firstMedia(project.cover);
   const isVideo = cover.type === "video";
 
   return (
