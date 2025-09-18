@@ -5,8 +5,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Permite tematizar por clase .dark en el árbol */
-@custom-variant dark (&:is(.dark *));
+/* Modo oscuro: usa la variante built-in `dark:` de Tailwind (darkMode: "class") */
+/* Coloca la clase .dark en el <html> o <body> y utiliza utilidades con `dark:` */
 
 /* Transiciones suaves entre temas */
 body { transition: background 0.30s ease, color 0.30s ease; }
