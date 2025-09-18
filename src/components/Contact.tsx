@@ -39,7 +39,7 @@ export default function Contact() {
     { name: "Email", link: `mailto:${CONTACT_EMAIL}`, icon: <FaEnvelope /> },
     { name: "LinkedIn", link: "https://linkedin.com/in/greyber-sojo", icon: <FaLinkedin /> },
     { name: "GitHub", link: "https://github.com/GreyberSojo", icon: <FaGithub /> },
-    { name: "Itch.io", link: "https://itch.io/profile", icon: <FaItchIo /> },
+    { name: "Itch.io", link: "", icon: <FaItchIo /> },
   ];
 
   /* ==== Form state ==== */
