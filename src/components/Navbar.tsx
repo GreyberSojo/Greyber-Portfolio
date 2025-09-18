@@ -3,7 +3,7 @@
 import { motion, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
 import { useCallback,useEffect, useMemo, useState } from "react";
-
+import { prefix } from "@/lib/prefix";
 import { cn } from "@/lib/utils";
 
 import DarkModeToggle from "./DarkModeToggle";
@@ -201,7 +201,7 @@ export default function Navbar() {
               {/* CTA + DarkMode + Idioma */}
               <div className="ml-2 flex items-center gap-5">
                 <a
-                  href="/CV.pdf"
+                  href={`${prefix}/CV.pdf`}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
