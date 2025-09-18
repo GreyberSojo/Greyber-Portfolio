@@ -4,7 +4,7 @@ export default function Footer() {
   const footerInfo = {
     rights: "Todos los derechos reservados",
     extra: "Hecho con ❤️ y café",
-    lastUpdate: "Agosto 2025",
+    lastUpdate: "Septiembre 2025",
     location: "Argentina 🇦🇷",
   };
 
