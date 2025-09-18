@@ -2,6 +2,11 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 
+const isProd = process.env.NODE_ENV === 'production';
+const repository = 'Greyber-Portfolio';
+const assetPrefix = isProd ? `/${repository}/` : '';
+const basePath = isProd ? `/${repository}` : '';
+
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   // Si más adelante quieres usar remark/rehype, se agregan aquí:
@@ -11,8 +16,14 @@ const withMDX = createMDX({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ["ts", "tsx", "mdx"],
+  output: 'export',
+  distDir: 'out',
+  assetPrefix: assetPrefix,
+  basePath: basePath,
+  images: {
+    unoptimized: true,
+  },
   // Opcionales útiles:
-  // images: { domains: ["..."] },
   // experimental: { turbo: { rules: {} } }
 };
 
